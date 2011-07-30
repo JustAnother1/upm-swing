@@ -1,11 +1,11 @@
 /*
  * $Id$
- * 
+ *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -46,8 +46,6 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import com._17od.upm.database.PasswordDatabase;
-import com._17od.upm.transport.Transport;
-import com._17od.upm.transport.TransportException;
 import com._17od.upm.util.Translator;
 
 import java.util.Arrays;
@@ -56,10 +54,10 @@ import java.util.Arrays;
 public class DatabasePropertiesDialog extends EscapeDialog {
 
     private boolean databaseNeedsSaving = false;
-    
+
     public DatabasePropertiesDialog(final JFrame frame, ArrayList accountNames, final PasswordDatabase database) {
         super(frame, Translator.translate("databaseProperties"), true);
-        
+
         Container container = getContentPane();
 
         // Create a pane with an empty border for spacing
@@ -137,7 +135,7 @@ public class DatabasePropertiesDialog extends EscapeDialog {
         c.gridy = 4;
         c.weighty = 1;
         mainPanel.add(verticalSpace, c);
-        
+
         // The buttons row
         JPanel buttonPanel = new JPanel(new FlowLayout());
         emptyBorderPanel.add(buttonPanel);
@@ -148,7 +146,7 @@ public class DatabasePropertiesDialog extends EscapeDialog {
             }
         });
         buttonPanel.add(okButton);
-        
+
         JButton cancelButton = new JButton(Translator.translate("cancel"));
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -158,10 +156,10 @@ public class DatabasePropertiesDialog extends EscapeDialog {
             }
         });
         buttonPanel.add(cancelButton);
-        
+
     }
-    
-    
+
+
     private URL validateURL(String urlString) {
         URL url = null;
         try {
@@ -171,13 +169,13 @@ public class DatabasePropertiesDialog extends EscapeDialog {
         }
         return url;
     }
-    
-    
-    private void saveDatabaseOptions(JFrame parentFrame, String remoteLocation, String authEntry, PasswordDatabase database) {
 
+
+    private void saveDatabaseOptions(JFrame parentFrame, String remoteLocation, String authEntry, PasswordDatabase database)
+    {
         boolean canCloseWindow = false;
 
-        // If either the url or authentication entry to use have changed then update 
+        // If either the url or authentication entry to use have changed then update
         // the flag to indicate that the database needs to be saved
         if (!database.getDbOptions().getRemoteLocation().equals(remoteLocation) ||
                 !database.getDbOptions().getAuthDBEntry().equals(authEntry)) {
@@ -187,50 +185,10 @@ public class DatabasePropertiesDialog extends EscapeDialog {
             canCloseWindow = true;
         }
 
-        // If the url/remoteLocation is not empty then we need to validate the URL and upload the database
-        if (!remoteLocation.equals("")) {
+        // If we were given a blank URL then the user doesn't want to maintain a remote location so we can safetly exit
+        canCloseWindow = true;
 
-            // Check the validity of the URL given by the user
-            URL url = validateURL(remoteLocation);
-            if (url != null) {
 
-                // Only allow supported protocols
-                if (Transport.isASupportedProtocol(url.getProtocol())) {
-
-                    // If the remote location has changed then upload the database
-                    if (!database.getDbOptions().getRemoteLocation().equals(remoteLocation)) {
-                        try {
-                            Transport transport = Transport.getTransportForURL(url);
-                            if (!authEntry.equals("")) {
-                                byte[] userId = database.getAccount(authEntry).getUserId();
-                                byte[] password = database.getAccount(authEntry).getPassword();
-                                transport.put(remoteLocation, database.getDatabaseFile(), userId, password);
-                            } else {
-                                transport.put(remoteLocation, database.getDatabaseFile());
-                            }
-                            canCloseWindow = true;
-                        } catch (TransportException e ){
-                            JOptionPane.showMessageDialog(parentFrame, e.getMessage(), Translator.translate("transportError"), JOptionPane.ERROR_MESSAGE);                            
-                        }
-                    } else {
-                        canCloseWindow = true;
-                    }
-
-                } else {
-                    JOptionPane.showMessageDialog(parentFrame, Translator.translate("unsupportedProtocol"), Translator.translate("invalidProtocol"), JOptionPane.ERROR_MESSAGE);
-                }
-
-            } else {
-                // If we got here the the URL is invalid
-                JOptionPane.showMessageDialog(parentFrame, Translator.translate("givenURLIsInvalid"), Translator.translate("invalidURL"), JOptionPane.ERROR_MESSAGE);
-            }
-            
-        } else {
-            // If we were given a blank URL then the user doesn't want to maintain a remote location so we can safetly exit
-            canCloseWindow = true;
-        }
-
-        
         // Attempt to save the database and then close the window
         if (canCloseWindow) {
             try {
@@ -244,7 +202,7 @@ public class DatabasePropertiesDialog extends EscapeDialog {
                 JOptionPane.showMessageDialog(parentFrame, e.getMessage(), Translator.translate("problemSavingDB"), JOptionPane.ERROR_MESSAGE);
             }
         }
-        
+
     }
 
 

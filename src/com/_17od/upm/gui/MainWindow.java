@@ -745,8 +745,6 @@ public class MainWindow extends JFrame implements ActionListener {
                 dbActions.openDatabase();
             } else if (event.getActionCommand() == MainWindow.OPEN_DATABASE_FROM_URL_TXT) {
                 dbActions.openDatabaseFromURL();
-            } else if (event.getActionCommand() == MainWindow.SYNC_DATABASE_TXT) {
-                dbActions.syncWithRemoteDatabase();
             } else if (event.getActionCommand() == MainWindow.ADD_ACCOUNT_TXT) {
                 dbActions.addAccount();
             } else if (event.getActionCommand() == MainWindow.EDIT_ACCOUNT_TXT) {
