@@ -1,11 +1,11 @@
 /*
  * $Id$
- * 
+ *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -57,7 +57,7 @@ public class AboutDialog extends EscapeDialog {
         aboutText.append("Universal Password Manager\n");
         aboutText.append(version);
         aboutText.append("\n\n");
-        aboutText.append("Copyright © 2005-2010 Adrian Smith & Contributors\n\n");
+        aboutText.append("Copyright (c) 2005-2010 Adrian Smith & Contributors\n\n");
         aboutText.append("adrian@17od.com\n");
         aboutText.append("http://upm.sourceforge.net");
         jTextArea.setText(aboutText.toString());
@@ -83,9 +83,9 @@ public class AboutDialog extends EscapeDialog {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         getContentPane().add(panel);
-        
+
         setResizable(false);
-        
+
     }
 
 }

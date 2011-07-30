@@ -1,11 +1,11 @@
 /*
  * $Id$
- * 
+ *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -66,7 +66,6 @@ import javax.swing.event.ListSelectionListener;
 
 import com._17od.upm.database.AccountInformation;
 import com._17od.upm.database.ProblemReadingDatabaseFile;
-import com._17od.upm.platformspecific.PlatformSpecificCode;
 import com._17od.upm.util.Preferences;
 import com._17od.upm.util.Translator;
 import com._17od.upm.util.Util;
@@ -78,7 +77,7 @@ import com._17od.upm.util.Util;
 public class MainWindow extends JFrame implements ActionListener {
 
     private static final String applicationName = "Universal Password Manager";
-    
+
     public static final String NEW_DATABASE_TXT = "newDatabaseMenuItem";
     public static final String OPEN_DATABASE_TXT = "openDatabaseMenuItem";
     public static final String OPEN_DATABASE_FROM_URL_TXT = "openDatabaseFromURLMenuItem";
@@ -108,7 +107,7 @@ public class MainWindow extends JFrame implements ActionListener {
     private JTextField searchField;
     private JButton resetSearchButton;
     private JLabel searchIcon;
-    
+
     private JMenu databaseMenu;
     private JMenuItem newDatabaseMenuItem;
     private JMenuItem openDatabaseMenuItem;
@@ -131,7 +130,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
     private JList accountsListview;
     private JLabel statusBar = new JLabel(" ");
-    
+
     private DatabaseActions dbActions;
 
 
@@ -139,14 +138,12 @@ public class MainWindow extends JFrame implements ActionListener {
         super(title);
 
         Preferences.load();
-        
+
         Translator.initialise();
-        
+
         setIconImage(Util.loadImage("upm.gif").getImage());
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        PlatformSpecificCode.getInstance().initialiseApplication(this);
 
         dbActions = new DatabaseActions(this);
 
@@ -157,7 +154,7 @@ public class MainWindow extends JFrame implements ActionListener {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        
+
         try {
             //Load the startup database if it's configured
             String db = Preferences.get(Preferences.ApplicationOptions.DB_TO_LOAD_ON_STARTUP);
@@ -172,14 +169,14 @@ public class MainWindow extends JFrame implements ActionListener {
         } catch (Exception e) {
             dbActions.errorHandler(e);
         }
-        
+
         //Give the search field focus
         // I'm using requestFocusInWindow() rathar than requestFocus()
         // because the javadocs recommend it
         searchField.requestFocusInWindow();
-        
+
     }
-   
+
 
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -212,7 +209,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
         //Create the menubar
         setJMenuBar(createMenuBar());
-        
+
         GridBagConstraints c = new GridBagConstraints();
 
         //The toolbar Row
@@ -229,7 +226,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
         //Keep the frame background color consistent
         getContentPane().setBackground(toolbar.getBackground());
-        
+
         //The seperator Row
         c.gridx = 0;
         c.gridy = 1;
@@ -240,7 +237,7 @@ public class MainWindow extends JFrame implements ActionListener {
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         getContentPane().add(new JSeparator(), c);
-        
+
         //The search field row
         searchIcon = new JLabel(Util.loadImage("search.gif"));
         searchIcon.setDisabledIcon(Util.loadImage("search_d.gif"));
@@ -254,7 +251,7 @@ public class MainWindow extends JFrame implements ActionListener {
         c.gridwidth = 1;
         c.fill = GridBagConstraints.NONE;
         getContentPane().add(searchIcon, c);
-        
+
         searchField = new JTextField(15);
         searchField.setEnabled(false);
         searchField.setMinimumSize(searchField.getPreferredSize());
@@ -274,9 +271,9 @@ public class MainWindow extends JFrame implements ActionListener {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     dbActions.resetSearch();
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    //If the user hits the enter key in the search field and there's only one item 
-                    //in the listview then open that item (this code assumes that the one item in 
-                    //the listview has already been selected. this is done automatically in the 
+                    //If the user hits the enter key in the search field and there's only one item
+                    //in the listview then open that item (this code assumes that the one item in
+                    //the listview has already been selected. this is done automatically in the
                     //DatabaseActions.filter() method)
                     if (accountsListview.getModel().getSize() == 1) {
                         viewAccountMenuItem.doClick();
@@ -369,14 +366,14 @@ public class MainWindow extends JFrame implements ActionListener {
         getContentPane().add(statusBar, c);
 
     }
-    
-    
+
+
     private JToolBar createToolBar() {
-        
+
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
         toolbar.setRollover(true);
-        
+
         // The "Add Account" button
         addAccountButton = new JButton();
         addAccountButton.setToolTipText(Translator.translate(ADD_ACCOUNT_TXT));
@@ -466,7 +463,7 @@ public class MainWindow extends JFrame implements ActionListener {
     private JMenuBar createMenuBar() {
 
         JMenuBar menuBar = new JMenuBar();
-        
+
         databaseMenu = new JMenu(Translator.translate("databaseMenu"));
         databaseMenu.setMnemonic(KeyEvent.VK_D);
         menuBar.add(databaseMenu);
@@ -477,7 +474,7 @@ public class MainWindow extends JFrame implements ActionListener {
         databaseMenu.add(newDatabaseMenuItem);
         newDatabaseMenuItem.addActionListener(this);
         newDatabaseMenuItem.setActionCommand(NEW_DATABASE_TXT);
- 
+
         openDatabaseMenuItem = new JMenuItem(Translator.translate(OPEN_DATABASE_TXT), KeyEvent.VK_O);
         openDatabaseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -501,7 +498,7 @@ public class MainWindow extends JFrame implements ActionListener {
         syncWithRemoteDatabaseMenuItem.addActionListener(this);
         syncWithRemoteDatabaseMenuItem.setEnabled(false);
         syncWithRemoteDatabaseMenuItem.setActionCommand(SYNC_DATABASE_TXT);
-        
+
         changeMasterPasswordMenuItem = new JMenuItem(Translator.translate(CHANGE_MASTER_PASSWORD_TXT), KeyEvent.VK_G);
         changeMasterPasswordMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -535,7 +532,7 @@ public class MainWindow extends JFrame implements ActionListener {
         accountMenu = new JMenu(Translator.translate("accountMenu"));
         accountMenu.setMnemonic(KeyEvent.VK_A);
         menuBar.add(accountMenu);
-        
+
         addAccountMenuItem = new JMenuItem(Translator.translate(ADD_ACCOUNT_TXT), KeyEvent.VK_A);
         addAccountMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -543,7 +540,7 @@ public class MainWindow extends JFrame implements ActionListener {
         addAccountMenuItem.addActionListener(this);
         addAccountMenuItem.setEnabled(false);
         addAccountMenuItem.setActionCommand(ADD_ACCOUNT_TXT);
-        
+
         editAccountMenuItem = new JMenuItem(Translator.translate(EDIT_ACCOUNT_TXT), KeyEvent.VK_E);
         editAccountMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -559,7 +556,7 @@ public class MainWindow extends JFrame implements ActionListener {
         deleteAccountMenuItem.addActionListener(this);
         deleteAccountMenuItem.setEnabled(false);
         deleteAccountMenuItem.setActionCommand(DELETE_ACCOUNT_TXT);
-        
+
         viewAccountMenuItem = new JMenuItem(Translator.translate(VIEW_ACCOUNT_TXT), KeyEvent.VK_V);
         viewAccountMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -567,7 +564,7 @@ public class MainWindow extends JFrame implements ActionListener {
         viewAccountMenuItem.addActionListener(this);
         viewAccountMenuItem.setEnabled(false);
         viewAccountMenuItem.setActionCommand(VIEW_ACCOUNT_TXT);
-        
+
         copyUsernameMenuItem = new JMenuItem(Translator.translate(COPY_USERNAME_TXT), KeyEvent.VK_U);
         copyUsernameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -602,24 +599,20 @@ public class MainWindow extends JFrame implements ActionListener {
         aboutMenuItem.addActionListener(this);
         aboutMenuItem.setActionCommand(ABOUT_TXT);
 
-        //Because the MAC version of UPM will have a program item in the menu bar then these items
-        //only need to be added on non-mac platforms
-        if (!PlatformSpecificCode.isMAC()) {
-            databaseMenu.addSeparator();
-            databaseMenu.add(exitMenuItem);
+        databaseMenu.addSeparator();
+        databaseMenu.add(exitMenuItem);
 
-            helpMenu = new JMenu(Translator.translate("helpMenu"));
-            helpMenu.setMnemonic(KeyEvent.VK_H);
-            menuBar.add(helpMenu);
-    
-            helpMenu.add(aboutMenuItem);
-        }
+        helpMenu = new JMenu(Translator.translate("helpMenu"));
+        helpMenu.setMnemonic(KeyEvent.VK_H);
+        menuBar.add(helpMenu);
+
+        helpMenu.add(aboutMenuItem);
 
         return menuBar;
-        
+
     }
-    
-    
+
+
     public JList getAccountsListview() {
         return accountsListview;
     }
@@ -718,7 +711,7 @@ public class MainWindow extends JFrame implements ActionListener {
         return viewAccountMenuItem;
     }
 
-    
+
     public JMenuItem getEditAccountMenuItem() {
         return editAccountMenuItem;
     }
@@ -809,7 +802,7 @@ public class MainWindow extends JFrame implements ActionListener {
         return statusBar;
     }
 
-    
+
     /**
      * Initialise all the menus, buttons, etc to take account of the language selected by the user
      */
@@ -832,13 +825,6 @@ public class MainWindow extends JFrame implements ActionListener {
         aboutMenuItem.setText(Translator.translate(ABOUT_TXT));
         exportMenuItem.setText(Translator.translate(EXPORT_TXT));
         importMenuItem.setText(Translator.translate(IMPORT_TXT));
-
-        //Because the MAC version of UPM will have a program item in the menu bar then these items
-        //only need to be added on non-mac platforms
-        if (!PlatformSpecificCode.isMAC()) {
-            helpMenu.setText(Translator.translate("helpMenu"));
-        }
-
         addAccountButton.setToolTipText(Translator.translate(ADD_ACCOUNT_TXT));
         editAccountButton.setToolTipText(Translator.translate(EDIT_ACCOUNT_TXT));
         deleteAccountButton.setToolTipText(Translator.translate(DELETE_ACCOUNT_TXT));
@@ -849,5 +835,5 @@ public class MainWindow extends JFrame implements ActionListener {
         optionsButton.setToolTipText(Translator.translate(OPTIONS_TXT));
         resetSearchButton.setToolTipText(Translator.translate(RESET_SEARCH_TXT));
     }
-    
+
 }

@@ -7,7 +7,7 @@
  Copyright (C) 2005 Adrian Smith
 
  This file is part of Universal Password Manager.
-   
+
  Universal Password Manager is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
@@ -26,7 +26,7 @@
 <project name="Universal Password Manager" default="compile" basedir=".">
 
     <property file="build.properties"/>
-    
+
     <!-- Set all the project properties -->
     <property name="src" value="src"/>
     <property name="test.src" value="test"/>
@@ -37,8 +37,6 @@
     <property name="short.name" value="upm"/>
     <property name="full.name" value="UPM"/>
     <property name="lib" value="lib"/>
-    <property name="repos.url" value="https://upm.svn.sourceforge.net/svnroot/upm/swing"/>
-    <property name="coveragereport.dir" value="coveragereport.dir"/>
 
 
     <!-- Define a classpath for use later on -->
@@ -51,31 +49,7 @@
     </path>
 
 
-    <path id="cobertura.classpath">
-        <fileset dir="${cobertura.dir}">
-            <include name="cobertura.jar" />
-            <include name="lib\**\*.jar" />
-        </fileset>
-    </path>
-    <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
-
-    <taskdef resource="svntask.properties">
-        <classpath>
-            <pathelement location="${svnant.home}\lib\svnant.jar"/>
-            <pathelement location="${svnant.home}\lib\svnClientAdapter.jar"/>
-            <pathelement location="${svnant.home}\lib\svnjavahl.jar"/>
-            <pathelement location="${svnant.home}\lib\commons-lang-2.0.jar"/>
-            <pathelement location="${svnant.home}\lib\jakarta-regexp-1.3.jar"/>
-        </classpath>
-    </taskdef>
-
-    <taskdef name="jarbundler" classpath="${lib}\jarbundler-2.1.0.jar" classname="net.sourceforge.jarbundler.JarBundler"/>
-
-
     <target name="init">
-        <condition property="isMacOSX">
-            <os family="mac"/>
-        </condition>
     </target>
 
 
@@ -85,7 +59,6 @@
         <delete dir="${test.build}"/>
         <delete dir="${dist}"/>
         <delete dir="${build.instrumented}"/>
-        <delete dir="${coveragereport.dir}"/>
         <delete>
             <fileset dir="${basedir}" includes="TEST-*"/>
         </delete>
@@ -96,13 +69,13 @@
     <target name="compile" depends="init">
 
         <mkdir dir="${build}"/>
-        <javac srcdir="${src}" destdir="${build}" debug="on" failonerror="true" 
+        <javac srcdir="${src}" destdir="${build}" debug="on" failonerror="true" includeantruntime="false"
             excludes="com\_17od\upm\platformspecific\**" source="1.4" target="1.4">
             <classpath refid="project.class.path"/>
         </javac>
 
         <mkdir dir="${test.build}"/>
-        <javac srcdir="${test.src}" destdir="${test.build}" debug="on" failonerror="true">
+        <javac srcdir="${test.src}" destdir="${test.build}" debug="on" failonerror="true" includeantruntime="false">
             <classpath refid="project.class.path"/>
         </javac>
 
@@ -111,27 +84,8 @@
                 <exclude name="**\*.java"/>
             </fileset>
         </copy>
-        
-        <!-- Compile platform specific code -->
-        <antcall target="compile.macosx"/>
-        
-        <!-- Compile the Cobertura instrumented classes -->
-        <delete file="cobertura.ser"/>
-        <cobertura-instrument todir="${build.instrumented}">
-            <fileset dir="${build}">
-                <exclude name="**\invest\**"/>
-            </fileset>
-        </cobertura-instrument>
 
     </target>
-
-    
-    <target name="compile.macosx" if="isMacOSX">
-        <javac srcdir="${src}" destdir="${build}" debug="on" failonerror="true" includes="com\_17od\upm\platformspecific\mac\**">
-            <classpath refid="project.class.path"/>
-        </javac>
-    </target>
-
 
     <target name="checkversion">
         <fail unless="version" message="Need to pass the parameter 'version' to this target"/>
@@ -146,7 +100,7 @@
         <echo message="Performing the build ${version}"/>
 
         <!-- Build the basic JAR distribution -->
-        <mkdir dir="${dist}\build"/>    
+        <mkdir dir="${dist}\build"/>
         <jar destfile="${dist}\build\${short.name}.jar" basedir="${build}" includes="**\*.class **\*.gif **\*.png **\*.properties" excludes="**\invest\**">
             <manifest>
                 <attribute name="Implementation-Title" value="${short.name}"/>
@@ -161,7 +115,7 @@
         <copy file="${basedir}\lib\commons-httpclient-3.0.jar" todir="${dist}\build"/>
         <copy file="${basedir}\lib\commons-logging-1.1.jar" todir="${dist}\build"/>
         <copy file="${basedir}\lib\bcprov-jdk14-145.jar" todir="${dist}\build"/>
-    	<copy file="${basedir}\lib\javacsv.jar" todir="${dist}\build"/>
+      <copy file="${basedir}\lib\javacsv.jar" todir="${dist}\build"/>
         <copy file="${basedir}\COPYING.txt" todir="${dist}\build"/>
         <copy file="${basedir}\README.txt" todir="${dist}\build"/>
         <tar destfile="${dist}\${short.name}-${version}.tar">
@@ -191,59 +145,15 @@
         </tar>
         <gzip src="${dist}\${short.name}-${version}.src.tar" destfile="${dist}\${short.name}-${version}.src.tar.gz"/>
         <delete file="${dist}\${short.name}-${version}.src.tar"/>
-
-        <!-- Build the Mac OS X distribution -->
-        <antcall target="build.macosx"/>
-
     </target>
 
 
-    <target name="build.deb">
-    </target>
-
-
-    <target name="build.macosx" if="isMacOSX">
-
-        <!-- Build the MAC OS X application -->
-        <mkdir dir="${dist}\mac"/>
-        <jarbundler dir="${dist}\mac"
-              mainclass="com._17od.upm.gui.MainWindow"
-                   name="${full.name}"
-                   icon="${basedir}\images\upm.icns"
-             jvmversion="1.4+"
-                version="${version}"
-             screenmenu="true">
-            <jarfilelist dir="${basedir}\lib" files="commons-codec-1.3.jar, commons-httpclient-3.0.jar, commons-logging-1.1.jar bcprov-jdk14-145.jar javacsv.jar"/>
-            <jarfilelist dir="${dist}\build" files="${short.name}.jar"/>
-        </jarbundler>
-        <copy file="${basedir}\server\http\upload.php" todir="${dist}\mac\server\http"/>
-        <copy file="${basedir}\server\http\deletefile.php" todir="${dist}\mac\server\http"/>
-        <copy file="${basedir}\COPYING.txt" todir="${dist}\mac"/>
-        <copy file="${basedir}\README.txt" todir="${dist}\mac"/>
-        <echo message="Use the MAC 'Disk Utility' to build a .DMG file with the contents of the directory ${basedir}\${dist}\mac"/>
-
-    </target>
-
-
-    <target name="release">
-        <fail unless="svn.username" message="Need to pass the parameter 'svn.username' to this target"/>
-        <fail unless="svn.password" message="Need to pass the parameter 'svn.password' to this target"/>
-        <fail unless="version" message="Need to pass the parameter 'version' to this target"/>
-
-        <svn username="${svn.username}" password="${svn.password}">
-            <copy srcUrl="${repos.url}/trunk" destUrl="${repos.url}/tags/${version}" message="Release ${version}"/>
-        </svn>
-    </target>
-
-    
     <target name="test" depends="compile">
         <!-- I had to put the junit.jar file into my ANT_HOME\lib in order for
              the junit task to work -->
         <junit haltonerror="on" haltonfailure="on" printsummary="on" showoutput="on" fork="yes">
-            <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser"/>
             <classpath location="${build.instrumented}"/>
             <classpath refid="project.class.path"/>
-            <classpath refid="cobertura.classpath"/>
             <jvmarg value="-Djunit.properties=${basedir}/build.properties"/>
             <jvmarg value="-Dupm.properties=${basedir}/upm.properties"/>
             <formatter type="plain"/>
@@ -258,12 +168,14 @@
                 </fileset>
             </batchtest>
         </junit>
-        <cobertura-report format="html" destdir="${coveragereport.dir}" srcdir="${src}"/>
     </target>
 
 
     <target name="localise">
         <native2ascii encoding="UTF-16BE" src="${src}" dest="${src}" includes="**/*.unicode" ext=".properties"/>
+    </target>
+
+    <target name="all" depends="build">
     </target>
 
 </project>
