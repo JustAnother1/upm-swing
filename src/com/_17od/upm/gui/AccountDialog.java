@@ -81,7 +81,7 @@ public class AccountDialog extends EscapeDialog
 
         boolean addingAccount = false;
 
-        // Set the title based on weather we've been opened in readonly mode and weather the
+        // Set the title based on weather we've been opened in read only mode and weather the
         // Account passed in is empty or not
         String title = null;
         if (readOnly)
@@ -245,8 +245,9 @@ public class AccountDialog extends EscapeDialog
         c.fill = GridBagConstraints.HORIZONTAL;
         passwordPanel.add(generateRandomPasswordButton, c);
 
-        JCheckBox hidePasswordCheckbox = new JCheckBox(Translator.translate("hide"), true);
+        JCheckBox hidePasswordCheckbox = new JCheckBox(Translator.translate("hide"), false);
         defaultEchoChar = password.getEchoChar();
+        password.setEchoChar((char) 0);
         hidePasswordCheckbox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e)
             {
