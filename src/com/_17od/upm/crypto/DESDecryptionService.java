@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -38,32 +36,37 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 
-public class DESDecryptionService {
+public class DESDecryptionService
+{
 
     public static final String PBEWithMD5AndDES = "PBEWithMD5AndDES";
 
-    
+
     /**
      * This method initialises a local decryption cipher, and decrypts the given string.
-     * It's here as a convienence method for backwards compatibility with the old DES 
+     * It's here as a convienence method for backwards compatibility with the old DES
      * encryption algorithim pre 1.3
      * @param password
      * @param salt
      * @param ciphertext
      * @return The decrypted bytes
-     * @throws CryptoException 
+     * @throws CryptoException
      */
-    public static byte[] decrypt(char[] password, byte[] salt, byte[] cipherText) throws CryptoException {
-        return process(password, Cipher.DECRYPT_MODE, salt, cipherText); 
-    }
-    
-    public static byte[] encrypt(char[] password,  byte[] salt, byte[] plainText) throws CryptoException {
-        return process(password, Cipher.ENCRYPT_MODE, salt, plainText); 
+    public static byte[] decrypt(char[] password, byte[] salt, byte[] cipherText) throws CryptoException
+    {
+        return process(password, Cipher.DECRYPT_MODE, salt, cipherText);
     }
 
-    private static byte[] process(char[] password, int mode, byte[] salt, byte[] plainText) throws CryptoException {
+    public static byte[] encrypt(char[] password,  byte[] salt, byte[] plainText) throws CryptoException
+    {
+        return process(password, Cipher.ENCRYPT_MODE, salt, plainText);
+    }
+
+    private static byte[] process(char[] password, int mode, byte[] salt, byte[] plainText) throws CryptoException
+    {
         byte[] retVal = null;
-        try {
+        try
+        {
             PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
             SecretKeyFactory keyFac = SecretKeyFactory.getInstance(PBEWithMD5AndDES);
             SecretKey secreyKey = keyFac.generateSecret(pbeKeySpec);
@@ -71,30 +74,48 @@ public class DESDecryptionService {
             Cipher desDecryptionCipher = Cipher.getInstance(PBEWithMD5AndDES);
             desDecryptionCipher.init(mode, secreyKey, pbeParamSpec);
             retVal = desDecryptionCipher.doFinal(plainText);
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e)
+        {
             throw new CryptoException(e);
-        } catch (IllegalBlockSizeException e) {
+        }
+        catch (IllegalBlockSizeException e)
+        {
             throw new CryptoException(e);
-        } catch (BadPaddingException e) {
+        }
+        catch (BadPaddingException e)
+        {
             throw new CryptoException(e);
-        } catch (NoSuchPaddingException e) {
+        }
+        catch (NoSuchPaddingException e)
+        {
             throw new CryptoException(e);
-        } catch (InvalidKeySpecException e) {
+        }
+        catch (InvalidKeySpecException e)
+        {
             throw new CryptoException(e);
-        } catch (InvalidKeyException e) {
+        }
+        catch (InvalidKeyException e)
+        {
             throw new CryptoException(e);
-        } catch (InvalidAlgorithmParameterException e) {
+        }
+        catch (InvalidAlgorithmParameterException e)
+        {
             throw new CryptoException(e);
         }
 
         return retVal;
     }
 
-    public static byte[] generateSalt() throws CryptoException {
+    public static byte[] generateSalt() throws CryptoException
+    {
         SecureRandom saltGen;
-        try {
+        try
+        {
             saltGen = SecureRandom.getInstance("SHA1PRNG");
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e)
+        {
             throw new CryptoException(e);
         }
         byte pSalt[] = new byte[8];

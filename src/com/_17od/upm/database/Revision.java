@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -22,40 +20,31 @@
  */
 package com._17od.upm.database;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-public class Revision extends FlatPackObject {
+public class Revision
+{
 
     private int revision;
-    
-    
-    public Revision() {
+
+
+    public Revision()
+    {
         revision = 0;
     }
-    
-    
-    public int increment() {
+
+
+    public int increment()
+    {
         return ++revision;
     }
-    
-    public Revision(InputStream is) throws IOException, ProblemReadingDatabaseFile {
-        revision = getInt(is);
-    }
 
-    
-    public void flatPack(OutputStream os) throws IOException {
-        os.write(flatPack(String.valueOf(revision)));
-    }
-
-    
-    public int getRevision() {
+    public int getRevision()
+    {
         return revision;
     }
-    
-    
-    public void setRevision(int revision) {
+
+
+    public void setRevision(int revision)
+    {
         this.revision = revision;
     }
 

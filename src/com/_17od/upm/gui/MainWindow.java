@@ -1,6 +1,4 @@
 /*
- * $Id$
- *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
@@ -74,7 +72,8 @@ import com._17od.upm.util.Util;
 /**
  * This is the main application entry class
  */
-public class MainWindow extends JFrame implements ActionListener {
+public class MainWindow extends JFrame implements ActionListener
+{
 
     private static final String applicationName = "Universal Password Manager";
 
@@ -155,18 +154,25 @@ public class MainWindow extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        try {
+        try
+        {
             //Load the startup database if it's configured
-            String db = Preferences.get(Preferences.ApplicationOptions.DB_TO_LOAD_ON_STARTUP);
-            if (db != null && !db.equals("")) {
+            String db = Preferences.get(Preferences.DB_TO_LOAD_ON_STARTUP);
+            if (db != null && !db.equals(""))
+            {
                 File dbFile = new File(db);
-                if (!dbFile.exists()) {
+                if (!dbFile.exists())
+                {
                     dbActions.errorHandler(new Exception(Translator.translate("dbDoesNotExist", db)));
-                } else {
+                }
+                else
+                {
                     dbActions.openDatabase(db);
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             dbActions.errorHandler(e);
         }
 
@@ -178,21 +184,30 @@ public class MainWindow extends JFrame implements ActionListener {
     }
 
 
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                try {
+    public static void main(String[] args)
+    {
+        javax.swing.SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
                     //Use the System look and feel
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                     Double jvmVersion = new Double(System.getProperty("java.specification.version"));
-                    if (jvmVersion.doubleValue() < 1.4) {
+                    if (jvmVersion.doubleValue() < 1.4)
+                    {
                         JOptionPane.showMessageDialog(null, Translator.translate("requireJava14"), Translator.translate("problem"), JOptionPane.ERROR_MESSAGE);
                         System.exit(1);
-                     } else {
+                    }
+                    else
+                    {
                         new MainWindow(applicationName);
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
@@ -200,10 +215,12 @@ public class MainWindow extends JFrame implements ActionListener {
     }
 
 
-    private void addComponentsToPane() {
+    private void addComponentsToPane()
+    {
 
         //Ensure the layout manager is a BorderLayout
-        if (!(getContentPane().getLayout() instanceof GridBagLayout)) {
+        if (!(getContentPane().getLayout() instanceof GridBagLayout))
+        {
                 getContentPane().setLayout(new GridBagLayout());
         }
 
@@ -255,27 +272,37 @@ public class MainWindow extends JFrame implements ActionListener {
         searchField = new JTextField(15);
         searchField.setEnabled(false);
         searchField.setMinimumSize(searchField.getPreferredSize());
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
+        searchField.getDocument().addDocumentListener(new DocumentListener()
+        {
+            public void changedUpdate(DocumentEvent e)
+            {
                 //This method never seems to be called
             }
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(DocumentEvent e)
+            {
                 dbActions.filter();
             }
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent e)
+            {
                 dbActions.filter();
             }
         });
-        searchField.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        searchField.addKeyListener(new KeyAdapter()
+        {
+            public void keyPressed(KeyEvent e)
+            {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                {
                     dbActions.resetSearch();
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
                     //If the user hits the enter key in the search field and there's only one item
                     //in the listview then open that item (this code assumes that the one item in
                     //the listview has already been selected. this is done automatically in the
                     //DatabaseActions.filter() method)
-                    if (accountsListview.getModel().getSize() == 1) {
+                    if (accountsListview.getModel().getSize() == 1)
+                    {
                         viewAccountMenuItem.doClick();
                     }
                 }
@@ -316,30 +343,41 @@ public class MainWindow extends JFrame implements ActionListener {
         accountsListview.setVisibleRowCount(10);
         accountsListview.setModel(new SortedListModel());
         JScrollPane accountsScrollList = new JScrollPane(accountsListview, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        accountsListview.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
+        accountsListview.addFocusListener(new FocusAdapter()
+        {
+            public void focusGained(FocusEvent e)
+            {
              //If the listview gets focus, there is one ore more items in the listview and there is nothing
              //already selected, then select the first item in the list
-                if (accountsListview.getModel().getSize() > 0 && accountsListview.getSelectedIndex() == -1) {
+                if (accountsListview.getModel().getSize() > 0 && accountsListview.getSelectedIndex() == -1)
+                {
                     accountsListview.setSelectionInterval(0, 0);
                 }
             }
         });
-        accountsListview.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
+        accountsListview.addListSelectionListener(new ListSelectionListener()
+        {
+            public void valueChanged(ListSelectionEvent e)
+            {
                 dbActions.setButtonState();
             }
         });
-        accountsListview.addMouseListener(new MouseAdapter() {
-           public void mouseClicked(MouseEvent e) {
-               if (e.getClickCount() == 2) {
+        accountsListview.addMouseListener(new MouseAdapter()
+        {
+           public void mouseClicked(MouseEvent e)
+           {
+               if (e.getClickCount() == 2)
+               {
                    viewAccountMenuItem.doClick();
                }
            }
         });
-        accountsListview.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        accountsListview.addKeyListener(new KeyAdapter()
+        {
+            public void keyReleased(KeyEvent e)
+            {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
                     viewAccountMenuItem.doClick();
                 }
             }
@@ -368,7 +406,8 @@ public class MainWindow extends JFrame implements ActionListener {
     }
 
 
-    private JToolBar createToolBar() {
+    private JToolBar createToolBar()
+    {
 
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
@@ -411,8 +450,10 @@ public class MainWindow extends JFrame implements ActionListener {
         copyUsernameButton.setToolTipText(Translator.translate(COPY_USERNAME_TXT));
         copyUsernameButton.setIcon(Util.loadImage("copy_username.gif"));
         copyUsernameButton.setDisabledIcon(Util.loadImage("copy_username_d.gif"));;
-        copyUsernameButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        copyUsernameButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 copyUsernameToClipboard();
             }
         });
@@ -424,8 +465,10 @@ public class MainWindow extends JFrame implements ActionListener {
         copyPasswordButton.setToolTipText(Translator.translate(COPY_PASSWORD_TXT));
         copyPasswordButton.setIcon(Util.loadImage("copy_password.gif"));
         copyPasswordButton.setDisabledIcon(Util.loadImage("copy_password_d.gif"));;
-        copyPasswordButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        copyPasswordButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 copyPasswordToClipboard();
             }
         });
@@ -581,8 +624,10 @@ public class MainWindow extends JFrame implements ActionListener {
         copyPasswordMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         accountMenu.add(copyPasswordMenuItem);
-        copyPasswordMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        copyPasswordMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 copyPasswordToClipboard();
             }
         });
@@ -613,198 +658,257 @@ public class MainWindow extends JFrame implements ActionListener {
     }
 
 
-    public JList getAccountsListview() {
+    public JList getAccountsListview()
+    {
         return accountsListview;
     }
 
 
-    private void copyUsernameToClipboard() {
+    private void copyUsernameToClipboard()
+    {
         AccountInformation accInfo = dbActions.getSelectedAccount();
         copyToClipboard(new String(accInfo.getUserId()));
     }
 
 
-    private void copyPasswordToClipboard() {
+    private void copyPasswordToClipboard()
+    {
         AccountInformation accInfo = dbActions.getSelectedAccount();
         copyToClipboard(new String(accInfo.getPassword()));
     }
 
 
-    private void copyToClipboard(String s) {
+    private void copyToClipboard(String s)
+    {
         StringSelection stringSelection = new StringSelection(s);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, stringSelection);
     }
 
 
-    public JButton getCopyPasswordButton() {
+    public JButton getCopyPasswordButton()
+    {
         return copyPasswordButton;
     }
 
 
-    public JButton getCopyUsernameButton() {
+    public JButton getCopyUsernameButton()
+    {
         return copyUsernameButton;
     }
 
 
-    public JButton getEditAccountButton() {
+    public JButton getEditAccountButton()
+    {
         return editAccountButton;
     }
 
 
-    public JButton getAddAccountButton() {
+    public JButton getAddAccountButton()
+    {
         return addAccountButton;
     }
 
 
-    public JButton getOptionsButton() {
+    public JButton getOptionsButton()
+    {
         return optionsButton;
     }
 
 
-    public JButton getDeleteAccountButton() {
+    public JButton getDeleteAccountButton()
+    {
         return deleteAccountButton;
     }
 
 
-    public JTextField getSearchField() {
+    public JTextField getSearchField()
+    {
         return searchField;
     }
 
 
-    public JLabel getSearchIcon() {
+    public JLabel getSearchIcon()
+    {
         return searchIcon;
     }
 
 
-    public JButton getResetSearchButton() {
+    public JButton getResetSearchButton()
+    {
         return resetSearchButton;
     }
 
 
-    public JMenuItem getAboutMenuItem() {
+    public JMenuItem getAboutMenuItem()
+    {
         return aboutMenuItem;
     }
 
 
-    public JMenuItem getExitMenuItem() {
+    public JMenuItem getExitMenuItem()
+    {
         return exitMenuItem;
     }
 
 
-    public JMenuItem getCopyPasswordMenuItem() {
+    public JMenuItem getCopyPasswordMenuItem()
+    {
         return copyPasswordMenuItem;
     }
 
 
-    public JMenuItem getCopyUsernameMenuItem() {
+    public JMenuItem getCopyUsernameMenuItem()
+    {
         return copyUsernameMenuItem;
     }
 
 
-    public JMenuItem getDeleteAccountMenuItem() {
+    public JMenuItem getDeleteAccountMenuItem()
+    {
         return deleteAccountMenuItem;
     }
 
 
-    public JMenuItem getViewAccountMenuItem() {
+    public JMenuItem getViewAccountMenuItem()
+    {
         return viewAccountMenuItem;
     }
 
 
-    public JMenuItem getEditAccountMenuItem() {
+    public JMenuItem getEditAccountMenuItem()
+    {
         return editAccountMenuItem;
     }
 
 
-    public static String getApplicationName() {
+    public static String getApplicationName()
+    {
         return applicationName;
     }
 
 
-    public JMenuItem getAddAccountMenuItem() {
+    public JMenuItem getAddAccountMenuItem()
+    {
         return addAccountMenuItem;
     }
 
 
-    public JMenuItem getChangeMasterPasswordMenuItem() {
+    public JMenuItem getChangeMasterPasswordMenuItem()
+    {
         return changeMasterPasswordMenuItem;
     }
 
 
-    public JMenuItem getDatabasePropertiesMenuItem() {
+    public JMenuItem getDatabasePropertiesMenuItem()
+    {
         return databasePropertiesMenuItem;
     }
 
 
-    public void actionPerformed(ActionEvent event) {
-        try {
-            if (event.getActionCommand() == MainWindow.NEW_DATABASE_TXT) {
+    public void actionPerformed(ActionEvent event)
+    {
+        try
+        {
+            if (event.getActionCommand() == MainWindow.NEW_DATABASE_TXT)
+            {
                 dbActions.newDatabase();
-            } else if (event.getActionCommand() == MainWindow.OPEN_DATABASE_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.OPEN_DATABASE_TXT)
+            {
                 dbActions.openDatabase();
-            } else if (event.getActionCommand() == MainWindow.OPEN_DATABASE_FROM_URL_TXT) {
-                dbActions.openDatabaseFromURL();
-            } else if (event.getActionCommand() == MainWindow.ADD_ACCOUNT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.ADD_ACCOUNT_TXT)
+            {
                 dbActions.addAccount();
-            } else if (event.getActionCommand() == MainWindow.EDIT_ACCOUNT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.EDIT_ACCOUNT_TXT)
+            {
                 dbActions.editAccount();
-            } else if (event.getActionCommand() == MainWindow.DELETE_ACCOUNT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.DELETE_ACCOUNT_TXT)
+            {
                 dbActions.deleteAccount();
-            } else if (event.getActionCommand() == MainWindow.VIEW_ACCOUNT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.VIEW_ACCOUNT_TXT)
+            {
                 dbActions.viewAccount();
-            } else if (event.getActionCommand() == MainWindow.OPTIONS_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.OPTIONS_TXT)
+            {
                 dbActions.options();
-            } else if (event.getActionCommand() == MainWindow.ABOUT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.ABOUT_TXT)
+            {
                 dbActions.showAbout();
-            } else if (event.getActionCommand() == MainWindow.RESET_SEARCH_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.RESET_SEARCH_TXT)
+            {
                 dbActions.resetSearch();
-            } else if (event.getActionCommand() == MainWindow.CHANGE_MASTER_PASSWORD_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.CHANGE_MASTER_PASSWORD_TXT)
+            {
                 dbActions.changeMasterPassword();
-            } else if (event.getActionCommand() == MainWindow.DATABASE_PROPERTIES_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.DATABASE_PROPERTIES_TXT)
+            {
                 dbActions.showDatabaseProperties();
-            } else if (event.getActionCommand() == MainWindow.EXIT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.EXIT_TXT)
+            {
                 dbActions.exitApplication();
-            } else if (event.getActionCommand() == MainWindow.EXPORT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.EXPORT_TXT)
+            {
                 dbActions.export();
-            } else if (event.getActionCommand() == MainWindow.IMPORT_TXT) {
+            }
+            else if (event.getActionCommand() == MainWindow.IMPORT_TXT)
+            {
                 dbActions.importAccounts();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             dbActions.errorHandler(e);
         }
     }
 
 
-    public JButton getSyncWithRemoteDatabaseButton() {
+    public JButton getSyncWithRemoteDatabaseButton()
+    {
         return syncDatabaseButton;
     }
 
 
-    public JMenuItem getSyncWithRemoteDatabaseMenuItem() {
+    public JMenuItem getSyncWithRemoteDatabaseMenuItem()
+    {
         return syncWithRemoteDatabaseMenuItem;
     }
 
 
-    public JMenuItem getExportMenuItem() {
+    public JMenuItem getExportMenuItem()
+    {
         return exportMenuItem;
     }
 
 
-    public JMenuItem getImportMenuItem() {
+    public JMenuItem getImportMenuItem()
+    {
         return importMenuItem;
     }
 
 
-    public JLabel getStatusBar() {
+    public JLabel getStatusBar()
+    {
         return statusBar;
     }
 
 
     /**
-     * Initialise all the menus, buttons, etc to take account of the language selected by the user
+     * Initialize all the menus, buttons, etc to take account of the language selected by the user
      */
-    public void initialiseControlsWithDefaultLanguage() {
+    public void initialiseControlsWithDefaultLanguage()
+    {
         databaseMenu.setText(Translator.translate("databaseMenu"));
         newDatabaseMenuItem.setText(Translator.translate(NEW_DATABASE_TXT));
         openDatabaseMenuItem.setText(Translator.translate(OPEN_DATABASE_TXT));

@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -33,19 +31,24 @@ import com._17od.upm.util.Translator;
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
-public class AccountsCSVMarshaller {
+public class AccountsCSVMarshaller
+{
 
-    public void marshal(ArrayList accounts, File file) throws ExportException {
+    public void marshal(ArrayList accounts, File file) throws ExportException
+    {
 
-        if (file.exists()) {
+        if (file.exists())
+        {
             throw new ExportException("The file to export to already exists");
         }
 
-        try {
+        try
+        {
             FileWriter writer = new FileWriter(file);
-    
+
             CsvWriter csvWriter = new CsvWriter(writer, ',');
-            for (int i=0; i<accounts.size(); i++) {
+            for (int i=0; i<accounts.size(); i++)
+            {
                 csvWriter.writeRecord(
                         getAccountAsStringArray(
                                 (AccountInformation) accounts.get(i)
@@ -53,23 +56,29 @@ public class AccountsCSVMarshaller {
                 );
             }
             csvWriter.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             throw new ExportException(e);
         }
 
     }
 
-    public ArrayList unmarshal(File file) throws ImportException {
+    public ArrayList unmarshal(File file) throws ImportException
+    {
         ArrayList accounts = new ArrayList();
 
-        try {
+        try
+        {
             CsvReader csvReader = new CsvReader(new FileReader(file));
-            while (csvReader.readRecord()) {
-                if (csvReader.getColumnCount() != 5) {
+            while (csvReader.readRecord())
+            {
+                if (csvReader.getColumnCount() != 5)
+                {
                     throw new ImportException(
-                            Translator.translate("notCSVFileError", 
-                                    new Object[] {file.getAbsoluteFile(), 
-                                    new Long(csvReader.getCurrentRecord() + 1)})); 
+                            Translator.translate("notCSVFileError",
+                                    new Object[] {file.getAbsoluteFile(),
+                                    new Long(csvReader.getCurrentRecord() + 1)}));
                 }
                 accounts.add(new AccountInformation(
                         csvReader.get(0),
@@ -78,16 +87,21 @@ public class AccountsCSVMarshaller {
                         csvReader.get(3).getBytes(),
                         csvReader.get(4).getBytes()));
             }
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             throw new ImportException(e);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             throw new ImportException(e);
         }
 
         return accounts;
     }
 
-    private String[] getAccountAsStringArray(AccountInformation account) {
+    private String[] getAccountAsStringArray(AccountInformation account)
+    {
         String[] arr = new String[5];
         arr[0] = account.getAccountName();
         arr[1] = new String(account.getUserId());

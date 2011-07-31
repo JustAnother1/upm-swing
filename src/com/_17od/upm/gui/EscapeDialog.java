@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -33,21 +31,27 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 
 
-public class EscapeDialog extends JDialog {
+public class EscapeDialog extends JDialog
+{
 
-    public EscapeDialog(JFrame frame, String title, boolean modal) {
+    public EscapeDialog(JFrame frame, String title, boolean modal)
+    {
         super(frame, title, modal);
     }
-    
 
-    public EscapeDialog(JFrame frame, boolean modal) {
+
+    public EscapeDialog(JFrame frame, boolean modal)
+    {
         super(frame, modal);
     }
 
 
-    protected JRootPane createRootPane() {
-        ActionListener actionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+    protected JRootPane createRootPane()
+    {
+        ActionListener actionListener = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent actionEvent)
+            {
                 setVisible(false);
                 dispose();
             }

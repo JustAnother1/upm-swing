@@ -1,6 +1,4 @@
 /*
- * $Id$
- *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
@@ -51,11 +49,13 @@ import com._17od.upm.util.Translator;
 import java.util.Arrays;
 
 
-public class DatabasePropertiesDialog extends EscapeDialog {
+public class DatabasePropertiesDialog extends EscapeDialog
+{
 
     private boolean databaseNeedsSaving = false;
 
-    public DatabasePropertiesDialog(final JFrame frame, ArrayList accountNames, final PasswordDatabase database) {
+    public DatabasePropertiesDialog(final JFrame frame, ArrayList accountNames, final PasswordDatabase database)
+    {
         super(frame, Translator.translate("databaseProperties"), true);
 
         Container container = getContentPane();
@@ -89,7 +89,7 @@ public class DatabasePropertiesDialog extends EscapeDialog {
         mainPanel.add(urlLabel, c);
 
         // The Remote URL input field row
-        final JTextField urlTextField = new JTextField(database.getDbOptions().getRemoteLocation(), 20);
+        final JTextField urlTextField = new JTextField("", 20);
         c.gridx = 0;
         c.gridy = 1;
         c.anchor = GridBagConstraints.LINE_START;
@@ -118,7 +118,7 @@ public class DatabasePropertiesDialog extends EscapeDialog {
         System.arraycopy(accountNames.toArray(), 0, sAccountNames, 1, accountNames.size());
         Arrays.sort(sAccountNames);
         final JComboBox auth = new JComboBox(sAccountNames);
-        auth.setSelectedItem(database.getDbOptions().getAuthDBEntry());
+        // TODO auth.setSelectedItem(database.getDbOptions().getAuthDBEntry());
         c.gridx = 0;
         c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_START;
@@ -140,16 +140,20 @@ public class DatabasePropertiesDialog extends EscapeDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         emptyBorderPanel.add(buttonPanel);
         JButton okButton = new JButton(Translator.translate("ok"));
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        okButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 saveDatabaseOptions(frame, urlTextField.getText().trim(), (String) auth.getSelectedItem(), database);
             }
         });
         buttonPanel.add(okButton);
 
         JButton cancelButton = new JButton(Translator.translate("cancel"));
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        cancelButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 databaseNeedsSaving = false;
                 setVisible(false);
                 dispose();
@@ -160,11 +164,15 @@ public class DatabasePropertiesDialog extends EscapeDialog {
     }
 
 
-    private URL validateURL(String urlString) {
+    private URL validateURL(String urlString)
+    {
         URL url = null;
-        try {
+        try
+        {
             url = new URL(urlString);
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e)
+        {
             // If we got here the the URL is invalid
         }
         return url;
@@ -173,40 +181,20 @@ public class DatabasePropertiesDialog extends EscapeDialog {
 
     private void saveDatabaseOptions(JFrame parentFrame, String remoteLocation, String authEntry, PasswordDatabase database)
     {
-        boolean canCloseWindow = false;
-
-        // If either the url or authentication entry to use have changed then update
-        // the flag to indicate that the database needs to be saved
-        if (!database.getDbOptions().getRemoteLocation().equals(remoteLocation) ||
-                !database.getDbOptions().getAuthDBEntry().equals(authEntry)) {
-            databaseNeedsSaving = true;
-        } else {
-            // If the db doesn't need to be saved then we can close this window
-            canCloseWindow = true;
-        }
-
-        // If we were given a blank URL then the user doesn't want to maintain a remote location so we can safetly exit
-        canCloseWindow = true;
-
-
         // Attempt to save the database and then close the window
-        if (canCloseWindow) {
-            try {
-                if (databaseNeedsSaving) {
-                    database.getDbOptions().setAuthDBEntry(authEntry);
-                    database.getDbOptions().setRemoteLocation(remoteLocation);
-                }
-                setVisible(false);
-                dispose();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(parentFrame, e.getMessage(), Translator.translate("problemSavingDB"), JOptionPane.ERROR_MESSAGE);
-            }
+        try
+        {
+            setVisible(false);
+            dispose();
         }
-
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(parentFrame, e.getMessage(), Translator.translate("problemSavingDB"), JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-
-    public boolean getDatabaseNeedsSaving() {
+    public boolean getDatabaseNeedsSaving()
+    {
         return databaseNeedsSaving;
     }
 

@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -27,7 +25,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 
-public class Translator {
+public class Translator
+{
 
     public static Locale[] SUPPORTED_LOCALES = {new Locale("cs"), Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN, Locale.ITALIAN, new Locale("es")};
 
@@ -35,39 +34,46 @@ public class Translator {
     private static MessageFormat formatter;
 
 
-    public static String translate(String messageName, Object[] params) {
+    public static String translate(String messageName, Object[] params)
+    {
         formatter.applyPattern(resourceBundle.getString(messageName));
         return formatter.format(params);
     }
 
 
-    public static String translate(String messageName, Object param) {
+    public static String translate(String messageName, Object param)
+    {
         formatter.applyPattern(resourceBundle.getString(messageName));
         return formatter.format(new Object[] {param});
     }
 
 
-    public static String translate(String messageName) {
+    public static String translate(String messageName)
+    {
         return resourceBundle.getString(messageName);
     }
 
 
-    public static Locale getCurrentLocale() {
+    public static Locale getCurrentLocale()
+    {
         return resourceBundle.getLocale();
     }
 
 
-    public static void initialise() {
+    public static void initialise()
+    {
         Locale locale = Locale.ENGLISH;
-        String localePreference = Preferences.get(Preferences.ApplicationOptions.LOCALE);
-        if (localePreference != null) {
+        String localePreference = Preferences.get(Preferences.LOCALE);
+        if (localePreference != null)
+        {
             locale = new Locale(localePreference);
         }
         loadBundle(locale);
     }
 
-    
-    public static void loadBundle(Locale locale) {
+
+    public static void loadBundle(Locale locale)
+    {
         resourceBundle = ResourceBundle.getBundle("upm", locale);
         formatter = new MessageFormat("");
         formatter.setLocale(locale);

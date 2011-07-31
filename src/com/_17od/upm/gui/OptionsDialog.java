@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -55,8 +53,8 @@ import com._17od.upm.util.Preferences;
 import com._17od.upm.util.Translator;
 
 
-public class OptionsDialog extends EscapeDialog {
-
+public class OptionsDialog extends EscapeDialog
+{
     private JTextField dbToLoadOnStartup;
     private JCheckBox enableProxyCheckbox;
     private JTextField httpProxyHost;
@@ -75,9 +73,10 @@ public class OptionsDialog extends EscapeDialog {
     private char defaultEchoChar;
 
 
-    public OptionsDialog(JFrame frame) {
+    public OptionsDialog(JFrame frame)
+    {
         super(frame, Translator.translate("options"), true);
-        
+
         Container container = getContentPane();
 
         // Create a pane with an empty border for spacing
@@ -112,7 +111,7 @@ public class OptionsDialog extends EscapeDialog {
         mainPanel.add(urlLabel, c);
 
         // The "Database to Load on Startup" input field row
-        dbToLoadOnStartup = new JTextField(Preferences.get(Preferences.ApplicationOptions.DB_TO_LOAD_ON_STARTUP), 25);
+        dbToLoadOnStartup = new JTextField(Preferences.get(Preferences.DB_TO_LOAD_ON_STARTUP), 25);
         dbToLoadOnStartup.setHorizontalAlignment(JTextField.LEFT);
         c.gridx = 0;
         c.gridy = 1;
@@ -154,16 +153,19 @@ public class OptionsDialog extends EscapeDialog {
 
         // The "Locale" field row
         localeComboBox = new JComboBox(getSupportedLocaleNames());
-        for (int i=0; i<localeComboBox.getItemCount(); i++) {
+        for (int i=0; i<localeComboBox.getItemCount(); i++)
+        {
             // If the locale language is blank then set it to the English language
             // I'm not sure why this happens. Maybe it's because the default locale
             // is English???
             String currentLanguage = Translator.getCurrentLocale().getLanguage();
-            if (currentLanguage.equals("")) {
+            if (currentLanguage.equals(""))
+            {
                 currentLanguage = "en";
             }
-            
-            if (currentLanguage.equals(Translator.SUPPORTED_LOCALES[i].getLanguage())) {
+
+            if (currentLanguage.equals(Translator.SUPPORTED_LOCALES[i].getLanguage()))
+            {
                 localeComboBox.setSelectedIndex(i);
                 break;
             }
@@ -191,13 +193,18 @@ public class OptionsDialog extends EscapeDialog {
         emptyBorderPanel.add(proxyPanel);
 
         // The "Enable Proxy" row
-        Boolean proxyEnabled = new Boolean(Preferences.get(Preferences.ApplicationOptions.HTTP_PROXY_ENABLED));
+        Boolean proxyEnabled = new Boolean(Preferences.get(Preferences.HTTP_PROXY_ENABLED));
         enableProxyCheckbox = new JCheckBox(Translator.translate("enableProxy"), proxyEnabled.booleanValue());
-        enableProxyCheckbox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
+        enableProxyCheckbox.addItemListener(new ItemListener()
+        {
+            public void itemStateChanged(ItemEvent e)
+            {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
                     enableProxyComponents(true);
-                } else {
+                }
+                else
+                {
                     enableProxyComponents(false);
                 }
             }
@@ -211,7 +218,7 @@ public class OptionsDialog extends EscapeDialog {
         c.gridwidth = 1;
         c.fill = GridBagConstraints.NONE;
         proxyPanel.add(enableProxyCheckbox, c);
-        
+
         // The "HTTP Proxy" label row
         proxyLabel = new JLabel(Translator.translate("httpProxy"));
         c.gridx = 0;
@@ -237,7 +244,7 @@ public class OptionsDialog extends EscapeDialog {
         proxyPanel.add(proxyPortLabel, c);
 
         // The "HTTP Proxy" field row
-        httpProxyHost = new JTextField(Preferences.get(Preferences.ApplicationOptions.HTTP_PROXY_HOST), 20);
+        httpProxyHost = new JTextField(Preferences.get(Preferences.HTTP_PROXY_HOST), 20);
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_START;
@@ -248,7 +255,7 @@ public class OptionsDialog extends EscapeDialog {
         c.fill = GridBagConstraints.HORIZONTAL;
         proxyPanel.add(httpProxyHost, c);
 
-        httpProxyPort = new JTextField(Preferences.get(Preferences.ApplicationOptions.HTTP_PROXY_PORT), 6);
+        httpProxyPort = new JTextField(Preferences.get(Preferences.HTTP_PROXY_PORT), 6);
         c.gridx = 1;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_START;
@@ -272,7 +279,7 @@ public class OptionsDialog extends EscapeDialog {
         proxyPanel.add(proxyUsernameLabel, c);
 
         // The "HTTP Proxy Username" field row
-        httpProxyUsername = new JTextField(Preferences.get(Preferences.ApplicationOptions.HTTP_PROXY_USERNAME), 20);
+        httpProxyUsername = new JTextField(Preferences.get(Preferences.HTTP_PROXY_USERNAME), 20);
         c.gridx = 0;
         c.gridy = 4;
         c.anchor = GridBagConstraints.LINE_START;
@@ -296,7 +303,7 @@ public class OptionsDialog extends EscapeDialog {
         proxyPanel.add(proxyPasswordLabel, c);
 
         // The "HTTP Proxy Password" field row
-        String encodedPassword = Preferences.get(Preferences.ApplicationOptions.HTTP_PROXY_PASSWORD);
+        String encodedPassword = Preferences.get(Preferences.HTTP_PROXY_PASSWORD);
         String decodedPassword = null;
         if (encodedPassword != null) {
             decodedPassword = new String(Base64.decodeBase64(encodedPassword.getBytes()));
@@ -314,11 +321,16 @@ public class OptionsDialog extends EscapeDialog {
 
         hidePasswordCheckbox = new JCheckBox(Translator.translate("hide"), true);
         defaultEchoChar = httpProxyPassword.getEchoChar();
-        hidePasswordCheckbox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
+        hidePasswordCheckbox.addItemListener(new ItemListener()
+        {
+            public void itemStateChanged(ItemEvent e)
+            {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
                     httpProxyPassword.setEchoChar(defaultEchoChar);
-                } else {
+                }
+                else
+                {
                     httpProxyPassword.setEchoChar((char) 0);
                 }
             }
@@ -340,16 +352,20 @@ public class OptionsDialog extends EscapeDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         emptyBorderPanel.add(buttonPanel);
         JButton okButton = new JButton(Translator.translate("ok"));
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        okButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 okButtonAction();
             }
         });
         buttonPanel.add(okButton);
-        
+
         JButton cancelButton = new JButton(Translator.translate("cancel"));
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        cancelButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 setVisible(false);
                 dispose();
             }
@@ -358,9 +374,10 @@ public class OptionsDialog extends EscapeDialog {
 
         enableProxyComponents(proxyEnabled.booleanValue());
     }
-    
 
-    private void enableProxyComponents(boolean enable) {
+
+    private void enableProxyComponents(boolean enable)
+    {
         httpProxyHost.setEnabled(enable);
         httpProxyPort.setEnabled(enable);
         httpProxyUsername.setEnabled(enable);
@@ -373,27 +390,31 @@ public class OptionsDialog extends EscapeDialog {
     }
 
 
-    public boolean okClicked() {
+    public boolean okClicked()
+    {
         return okClicked;
     }
 
 
-    private void okButtonAction() {
-        try {
-            Preferences.set(Preferences.ApplicationOptions.DB_TO_LOAD_ON_STARTUP, dbToLoadOnStartup.getText());
-            Preferences.set(Preferences.ApplicationOptions.HTTP_PROXY_HOST, httpProxyHost.getText());
-            Preferences.set(Preferences.ApplicationOptions.HTTP_PROXY_PORT, httpProxyPort.getText());
-            Preferences.set(Preferences.ApplicationOptions.HTTP_PROXY_USERNAME, httpProxyUsername.getText());
+    private void okButtonAction()
+    {
+        try
+        {
+            Preferences.set(Preferences.DB_TO_LOAD_ON_STARTUP, dbToLoadOnStartup.getText());
+            Preferences.set(Preferences.HTTP_PROXY_HOST, httpProxyHost.getText());
+            Preferences.set(Preferences.HTTP_PROXY_PORT, httpProxyPort.getText());
+            Preferences.set(Preferences.HTTP_PROXY_USERNAME, httpProxyUsername.getText());
             String encodedPassword = new String(Base64.encodeBase64(new String(httpProxyPassword.getPassword()).getBytes()));
-            Preferences.set(Preferences.ApplicationOptions.HTTP_PROXY_PASSWORD, encodedPassword);
-            Preferences.set(Preferences.ApplicationOptions.HTTP_PROXY_ENABLED, String.valueOf(enableProxyCheckbox.isSelected()));
+            Preferences.set(Preferences.HTTP_PROXY_PASSWORD, encodedPassword);
+            Preferences.set(Preferences.HTTP_PROXY_ENABLED, String.valueOf(enableProxyCheckbox.isSelected()));
 
             // Save the new language and set a flag if it has changed
-            String beforeLocale = Preferences.get(Preferences.ApplicationOptions.LOCALE);
+            String beforeLocale = Preferences.get(Preferences.LOCALE);
             Locale selectedLocale = Translator.SUPPORTED_LOCALES[localeComboBox.getSelectedIndex()];
             String afterLocale = selectedLocale.getLanguage();
-            if (!afterLocale.equals(beforeLocale)) {
-                Preferences.set(Preferences.ApplicationOptions.LOCALE, selectedLocale.getLanguage());
+            if (!afterLocale.equals(beforeLocale))
+            {
+                Preferences.set(Preferences.LOCALE, selectedLocale.getLanguage());
                 Translator.loadBundle(selectedLocale);
                 languageChanged = true;
             }
@@ -402,28 +423,34 @@ public class OptionsDialog extends EscapeDialog {
             setVisible(false);
             dispose();
             okClicked = true;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             JOptionPane.showMessageDialog(parentFrame, e.getStackTrace(), Translator.translate("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    
-    private void getDBToLoadOnStartup() {
+
+    private void getDBToLoadOnStartup()
+    {
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle(Translator.translate("dbToOpenOnStartup"));
         int returnVal = fc.showOpenDialog(parentFrame);
-        
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
             File databaseFile = fc.getSelectedFile();
             dbToLoadOnStartup.setText(databaseFile.getAbsoluteFile().toString());
         }
     }
 
-    
-    private Object[] getSupportedLocaleNames() {
-        Object[] names = new Object[Translator.SUPPORTED_LOCALES.length]; 
 
-        for (int i=0; i<Translator.SUPPORTED_LOCALES.length; i++) {
+    private Object[] getSupportedLocaleNames()
+    {
+        Object[] names = new Object[Translator.SUPPORTED_LOCALES.length];
+
+        for (int i=0; i<Translator.SUPPORTED_LOCALES.length; i++)
+        {
             names[i] = Translator.SUPPORTED_LOCALES[i].getDisplayName() +
                 " (" + Translator.SUPPORTED_LOCALES[i].getDisplayName(Translator.getCurrentLocale())
                 + ')';
@@ -432,8 +459,9 @@ public class OptionsDialog extends EscapeDialog {
         return names;
     }
 
-    
-    public boolean hasLanguageChanged() {
+
+    public boolean hasLanguageChanged()
+    {
         return languageChanged;
     }
 

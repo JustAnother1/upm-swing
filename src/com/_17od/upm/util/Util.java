@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -33,43 +31,27 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 
-public class Util {
-
-    /**
-     * Left pad an integer to a given length with the given
-     * character 
-     * @param i The integer to pad
-     * @param length The length to pad it to
-     * @param c The character to do the padding with
-     * @return A padded version of the integer
-     */
-    public static String lpad(int i, int length, char c) {
-        StringBuffer buf = new StringBuffer(String.valueOf(i));
-        while (buf.length() < length) {
-            buf.insert(0, c);
-        }
-        return buf.toString();
-    }
-
-    
-    public static ImageIcon loadImage(String name) {
+public class Util
+{
+    public static ImageIcon loadImage(String name)
+    {
         URL imageURL = Util.class.getResource("images/" + name);
         return new ImageIcon(imageURL);
     }
 
-
-    public static void copy(File src, File dst) throws IOException {
+    public static void copy(File src, File dst) throws IOException
+    {
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
-    
         // Transfer bytes from in to out
         byte[] buf = new byte[1024];
         int len;
-        while ((len = in.read(buf)) > 0) {
+        while ((len = in.read(buf)) > 0)
+        {
             out.write(buf, 0, len);
         }
         in.close();
         out.close();
     }
-    
+
 }

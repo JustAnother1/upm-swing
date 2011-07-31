@@ -1,6 +1,4 @@
 /*
- * $Id$
- *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
@@ -39,19 +37,19 @@ import javax.swing.JTextArea;
 
 import com._17od.upm.util.Translator;
 
-public class AboutDialog extends EscapeDialog {
+public class AboutDialog extends EscapeDialog
+{
 
-    public AboutDialog(JFrame frame) {
+    public AboutDialog(JFrame frame)
+    {
         super(frame, Translator.translate("aboutUPM"), true);
-
         String version = AboutDialog.class.getPackage().getImplementationVersion();
-        if (version == null) {
+        if (version == null)
+        {
             version = "<version unknown>";
         }
-
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
         JTextArea jTextArea = new JTextArea();
         StringBuffer aboutText = new StringBuffer();
         aboutText.append("Universal Password Manager\n");
@@ -67,25 +65,21 @@ public class AboutDialog extends EscapeDialog {
         jTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         panel.add(jTextArea);
         panel.add(new JSeparator());
-
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
-
         JButton okButton = new JButton(Translator.translate("ok"));
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        okButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 setVisible(false);
                 dispose();
             }
         });
         okButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(okButton);
-
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
-
         getContentPane().add(panel);
-
         setResizable(false);
-
     }
 
 }

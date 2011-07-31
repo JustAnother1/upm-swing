@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -22,13 +20,16 @@
  */
 package com._17od.upm.database;
 
-public class ExportException extends Exception {
+public class ExportException extends Exception
+{
 
-    public ExportException(String message) {
+    public ExportException(String message)
+    {
         super(message);
     }
 
-    public ExportException(Exception e) {
+    public ExportException(Exception e)
+    {
         super(e);
     }
 

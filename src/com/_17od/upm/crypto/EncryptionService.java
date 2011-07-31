@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -37,7 +35,8 @@ import org.bouncycastle.crypto.paddings.PKCS7Padding;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 
 
-public class EncryptionService {
+public class EncryptionService
+{
 
     private static final String randomAlgorithm = "SHA1PRNG";
     public static final int SALT_LENGTH = 8;
@@ -46,44 +45,55 @@ public class EncryptionService {
     private BufferedBlockCipher encryptCipher;
     private BufferedBlockCipher decryptCipher;
 
-    public EncryptionService(char[] password) throws CryptoException {
-        try {
+    public EncryptionService(char[] password) throws CryptoException
+    {
+        try
+        {
             this.salt = generateSalt();
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e)
+        {
             throw new CryptoException(e);
         }
         initCipher(password);
     }
 
-    public EncryptionService(char[] password, byte[] salt) {
+    public EncryptionService(char[] password, byte[] salt)
+    {
         this.salt = salt;
         initCipher(password);
     }
 
-    public void initCipher(char[] password) {
+    public void initCipher(char[] password)
+    {
         PBEParametersGenerator keyGenerator = new PKCS12ParametersGenerator(new SHA256Digest());
         keyGenerator.init(PKCS12ParametersGenerator.PKCS12PasswordToBytes(password), salt, 20);
         CipherParameters keyParams = keyGenerator.generateDerivedParameters(256, 128);
-        
+
         encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new PKCS7Padding());
         encryptCipher.init(true, keyParams);
         decryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new PKCS7Padding());
         decryptCipher.init(false, keyParams);
     }
 
-    private byte[] generateSalt() throws NoSuchAlgorithmException {
+    private byte[] generateSalt() throws NoSuchAlgorithmException
+    {
         SecureRandom saltGen = SecureRandom.getInstance(randomAlgorithm);
         byte pSalt[] = new byte[SALT_LENGTH];
         saltGen.nextBytes(pSalt);
         return pSalt;
     }
 
-    public byte[] encrypt(byte[] plainText) throws CryptoException {
+    public byte[] encrypt(byte[] plainText) throws CryptoException
+    {
         byte[] encryptedBytes = new byte[encryptCipher.getOutputSize(plainText.length)];
         int outputLength = encryptCipher.processBytes(plainText, 0, plainText.length, encryptedBytes, 0);
-        try {
+        try
+        {
             outputLength += encryptCipher.doFinal(encryptedBytes, outputLength);
-        } catch (InvalidCipherTextException e) {
+        }
+        catch (InvalidCipherTextException e)
+        {
             throw new CryptoException(e);
         }
 
@@ -91,13 +101,17 @@ public class EncryptionService {
         System.arraycopy(encryptedBytes, 0, results, 0, outputLength);
         return results;
     }
-    
-    public byte[] decrypt(byte[] encryptedBytes) throws CryptoException {
+
+    public byte[] decrypt(byte[] encryptedBytes) throws CryptoException
+    {
         byte[] decryptedBytes = new byte[decryptCipher.getOutputSize(encryptedBytes.length)];
         int outputLength = decryptCipher.processBytes(encryptedBytes, 0, encryptedBytes.length, decryptedBytes, 0);
-        try {
+        try
+        {
             outputLength += decryptCipher.doFinal(decryptedBytes, outputLength);
-        } catch (InvalidCipherTextException e) {
+        }
+        catch (InvalidCipherTextException e)
+        {
             throw new CryptoException(e);
         }
 
@@ -106,7 +120,8 @@ public class EncryptionService {
         return results;
     }
 
-    public byte[] getSalt() {
+    public byte[] getSalt()
+    {
         return salt;
     }
 

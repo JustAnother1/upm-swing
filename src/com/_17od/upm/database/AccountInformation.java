@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -22,12 +20,11 @@
  */
 package com._17od.upm.database;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Serializable;
 
-
-public class AccountInformation extends FlatPackObject {
+public class AccountInformation implements Serializable
+{
+    private static final long serialVersionUID = 1L;
 
     private String accountName;
     private byte[] userId;
@@ -35,84 +32,72 @@ public class AccountInformation extends FlatPackObject {
     private byte[] url;
     private byte[] notes;
 
-
-    public AccountInformation() {
+    public AccountInformation()
+    {
         accountName = "";
         userId = "".getBytes();
         password = "".getBytes();
         url = "".getBytes();
         notes = "".getBytes();
     }
-    
-    
+
     public AccountInformation(String accountName, byte[] userId, byte[] password,
-            byte[] url, byte[] notes) {
+            byte[] url, byte[] notes)
+    {
         this.accountName = accountName;
         this.userId = userId;
         this.password = password;
         this.url = url;
         this.notes = notes;
     }
-    
-    
-    public AccountInformation(InputStream is) throws IOException, ProblemReadingDatabaseFile {
-        assemble(is);
-    }
-    
-    
-    public void flatPack(OutputStream os) throws IOException {
-        os.write(flatPack(accountName));
-        os.write(flatPack(userId));
-        os.write(flatPack(password));
-        os.write(flatPack(url));
-        os.write(flatPack(notes));
-    }
 
-    private void assemble(InputStream is) throws IOException, ProblemReadingDatabaseFile {
-        accountName = getString(is);
-        userId = getBytes(is);
-        password = getBytes(is);
-        url = getBytes(is);
-        notes = getBytes(is);
-    }
-    
-    public String getAccountName() {
+    public String getAccountName()
+    {
         return accountName;
     }
 
-    public void setAccountName(String accountName) {
+    public void setAccountName(String accountName)
+    {
         this.accountName = accountName;
     }
 
-    public byte[] getNotes() {
+    public byte[] getNotes()
+    {
         return notes;
     }
 
-    public void setNotes(byte[] notes) {
+    public void setNotes(byte[] notes)
+    {
         this.notes = notes;
     }
 
-    public byte[] getPassword() {
+    public byte[] getPassword()
+    {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(byte[] password)
+    {
         this.password = password;
     }
 
-    public byte[] getUrl() {
+    public byte[] getUrl()
+    {
         return url;
     }
 
-    public void setUrl(byte[] url) {
+    public void setUrl(byte[] url)
+    {
         this.url = url;
     }
 
-    public byte[] getUserId() {
+    public byte[] getUserId()
+    {
         return userId;
     }
 
-    public void setUserId(byte[] userId) {
+    public void setUserId(byte[] userId)
+    {
         this.userId = userId;
     }
 

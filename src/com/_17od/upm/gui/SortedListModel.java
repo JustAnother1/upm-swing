@@ -1,11 +1,9 @@
 /*
- * $Id$
- * 
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -33,9 +31,12 @@ public class SortedListModel extends AbstractListModel {
     private TreeSet model;
 
 
-    public SortedListModel() {
-        model = new TreeSet(new Comparator() {
-            public int compare(Object o1, Object o2) {
+    public SortedListModel()
+    {
+        model = new TreeSet(new Comparator()
+        {
+            public int compare(Object o1, Object o2)
+            {
                 String str1 = o1.toString();
                 String str2 = o2.toString();
                 Collator collator = Collator.getInstance();
@@ -45,41 +46,49 @@ public class SortedListModel extends AbstractListModel {
         });
     }
 
-    
-    public int getSize() {
+
+    public int getSize()
+    {
         return model.size();
     }
 
 
-    public Object getElementAt(int index) {
+    public Object getElementAt(int index)
+    {
         return model.toArray()[index];
     }
 
 
-    public void addElement(Object element) {
-        if (model.add(element)) {
+    public void addElement(Object element)
+    {
+        if (model.add(element))
+        {
             fireContentsChanged(this, 0, getSize());
         }
     }
 
 
-    public void clear() {
+    public void clear()
+    {
         model.clear();
         fireContentsChanged(this, 0, getSize());
     }
 
 
-    public boolean contains(Object element) {
+    public boolean contains(Object element)
+    {
         return model.contains(element);
     }
 
 
-    public boolean removeElement(Object element) {
+    public boolean removeElement(Object element)
+    {
         boolean removed = model.remove(element);
-        if (removed) {
+        if(removed)
+        {
             fireContentsChanged(this, 0, getSize());
         }
         return removed;
     }
-    
+
 }
