@@ -254,6 +254,7 @@ public class DatabaseActions
                 masterPassword.requestFocusInWindow();
             }
         });
+        masterPassword.requestFocusInWindow();
         dialog.setVisible(true);
 
         if (pane.getValue() != null && pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))

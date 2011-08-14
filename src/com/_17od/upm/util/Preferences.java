@@ -34,20 +34,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Preferences
 {
+    public static final String DB_TO_LOAD_ON_STARTUP= "DBToLoadOnStartup";
 
     private static Log log = LogFactory.getLog(Preferences.class);
-
-        public static final String DB_TO_LOAD_ON_STARTUP= "DBToLoadOnStartup";
-
-        public static final String HTTP_PROXY_ENABLED="http.proxy.enabled";
-        public static final String HTTP_PROXY_HOST="http.proxy.host";
-        public static final String HTTP_PROXY_PORT="http.proxy.port";
-        public static final String HTTP_PROXY_USERNAME="http.proxy.username";
-        public static final String HTTP_PROXY_PASSWORD="http.proxy.password";
-
-        public static final String LOCALE="locale";
-
-    private static final String PREF_FILE = System.getProperty("user.home") + System.getProperty("file.separator") + "upm.properties";
+    private static final String PREF_FILE = "upm.properties";
     private static final String PREF_FILE_SYS_PROP = "upm.properties";
     private static Properties preferences;
     private static String propertiesFile;

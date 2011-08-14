@@ -63,7 +63,7 @@ public class Translator
     public static void initialise()
     {
         Locale locale = Locale.ENGLISH;
-        String localePreference = Preferences.get(Preferences.LOCALE);
+        String localePreference = Preferences.get("locale");
         if (localePreference != null)
         {
             locale = new Locale(localePreference);
