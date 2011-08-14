@@ -69,16 +69,13 @@ import com._17od.upm.util.Preferences;
 import com._17od.upm.util.Translator;
 import com._17od.upm.util.Util;
 
-
 /**
  * This is the main application entry class
  */
 public class MainWindow extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 1L;
-
     private static final String applicationName = "Universal Password Manager";
-
     public static final String NEW_DATABASE_TXT = "newDatabaseMenuItem";
     public static final String OPEN_DATABASE_TXT = "openDatabaseMenuItem";
     public static final String CHANGE_MASTER_PASSWORD_TXT = "changeMasterPasswordMenuItem";
@@ -104,7 +101,6 @@ public class MainWindow extends JFrame implements ActionListener
     private JTextField searchField;
     private JButton resetSearchButton;
     private JLabel searchIcon;
-
     private JMenu databaseMenu;
     private JMenuItem newDatabaseMenuItem;
     private JMenuItem openDatabaseMenuItem;
@@ -121,12 +117,9 @@ public class MainWindow extends JFrame implements ActionListener
     private JMenuItem copyPasswordMenuItem;
     private JMenuItem exportMenuItem;
     private JMenuItem importMenuItem;
-
     private JList accountsListview;
     private JLabel statusBar = new JLabel(" ");
-
     private DatabaseActions dbActions;
-
 
     public MainWindow(String title) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
                                            UnsupportedLookAndFeelException, IllegalBlockSizeException, IOException,
@@ -172,7 +165,6 @@ public class MainWindow extends JFrame implements ActionListener
         searchField.requestFocusInWindow();
     }
 
-
     public static void main(String[] args)
     {
         javax.swing.SwingUtilities.invokeLater(new Runnable()
@@ -201,7 +193,6 @@ public class MainWindow extends JFrame implements ActionListener
             }
         });
     }
-
 
     private void addComponentsToPane()
     {
@@ -589,84 +580,9 @@ public class MainWindow extends JFrame implements ActionListener
         clipboard.setContents(stringSelection, stringSelection);
     }
 
-    public JButton getCopyPasswordButton()
-    {
-        return copyPasswordButton;
-    }
-
-    public JButton getCopyUsernameButton()
-    {
-        return copyUsernameButton;
-    }
-
-    public JButton getEditAccountButton()
-    {
-        return editAccountButton;
-    }
-
-    public JButton getAddAccountButton()
-    {
-        return addAccountButton;
-    }
-
-    public JButton getDeleteAccountButton()
-    {
-        return deleteAccountButton;
-    }
-
     public JTextField getSearchField()
     {
         return searchField;
-    }
-
-    public JLabel getSearchIcon()
-    {
-        return searchIcon;
-    }
-
-    public JButton getResetSearchButton()
-    {
-        return resetSearchButton;
-    }
-
-    public JMenuItem getCopyPasswordMenuItem()
-    {
-        return copyPasswordMenuItem;
-    }
-
-    public JMenuItem getCopyUsernameMenuItem()
-    {
-        return copyUsernameMenuItem;
-    }
-
-    public JMenuItem getDeleteAccountMenuItem()
-    {
-        return deleteAccountMenuItem;
-    }
-
-    public JMenuItem getViewAccountMenuItem()
-    {
-        return viewAccountMenuItem;
-    }
-
-    public JMenuItem getEditAccountMenuItem()
-    {
-        return editAccountMenuItem;
-    }
-
-    public static String getApplicationName()
-    {
-        return applicationName;
-    }
-
-    public JMenuItem getAddAccountMenuItem()
-    {
-        return addAccountMenuItem;
-    }
-
-    public JMenuItem getChangeMasterPasswordMenuItem()
-    {
-        return changeMasterPasswordMenuItem;
     }
 
     public void actionPerformed(ActionEvent event)
@@ -732,16 +648,6 @@ public class MainWindow extends JFrame implements ActionListener
         }
     }
 
-    public JMenuItem getExportMenuItem()
-    {
-        return exportMenuItem;
-    }
-
-    public JMenuItem getImportMenuItem()
-    {
-        return importMenuItem;
-    }
-
     public JLabel getStatusBar()
     {
         return statusBar;
@@ -777,32 +683,26 @@ public class MainWindow extends JFrame implements ActionListener
         resetSearchButton.setToolTipText(Translator.translate(RESET_SEARCH_TXT));
     }
 
-    public void setButtonState()
+    private void setButtonState()
     {
+        Boolean state_enbabled;
         if(getAccountsListview().getSelectedValue() == null)
         {
-            getEditAccountButton().setEnabled(false);
-            getCopyUsernameButton().setEnabled(false);
-            getCopyPasswordButton().setEnabled(false);
-            getDeleteAccountButton().setEnabled(false);
-            getEditAccountMenuItem().setEnabled(false);
-            getCopyUsernameMenuItem().setEnabled(false);
-            getCopyPasswordMenuItem().setEnabled(false);
-            getDeleteAccountMenuItem().setEnabled(false);
-            getViewAccountMenuItem().setEnabled(false);
+            state_enbabled = false;
         }
         else
         {
-            getEditAccountButton().setEnabled(true);
-            getCopyUsernameButton().setEnabled(true);
-            getCopyPasswordButton().setEnabled(true);
-            getDeleteAccountButton().setEnabled(true);
-            getEditAccountMenuItem().setEnabled(true);
-            getCopyUsernameMenuItem().setEnabled(true);
-            getCopyPasswordMenuItem().setEnabled(true);
-            getDeleteAccountMenuItem().setEnabled(true);
-            getViewAccountMenuItem().setEnabled(true);
+            state_enbabled = true;
         }
+        editAccountButton.setEnabled(state_enbabled);
+        copyUsernameButton.setEnabled(state_enbabled);
+        copyPasswordButton.setEnabled(state_enbabled);
+        deleteAccountButton.setEnabled(state_enbabled);
+        editAccountMenuItem.setEnabled(state_enbabled);
+        copyUsernameMenuItem.setEnabled(state_enbabled);
+        copyPasswordMenuItem.setEnabled(state_enbabled);
+        deleteAccountMenuItem.setEnabled(state_enbabled);
+        viewAccountMenuItem.setEnabled(state_enbabled);
     }
 
     public void populateListview(ArrayList<String> accountNames)
@@ -819,16 +719,16 @@ public class MainWindow extends JFrame implements ActionListener
 
     public void doOpenDatabaseActions(String dataBaseFileName)
     {
-        getAddAccountButton().setEnabled(true);
-        getAddAccountMenuItem().setEnabled(true);
+        addAccountButton.setEnabled(true);
+        addAccountMenuItem.setEnabled(true);
         getSearchField().setEnabled(true);
         getSearchField().setText("");
-        getSearchIcon().setEnabled(true);
-        getResetSearchButton().setEnabled(true);
-        getChangeMasterPasswordMenuItem().setEnabled(true);
-        getExportMenuItem().setEnabled(true);
-        getImportMenuItem().setEnabled(true);
-        setTitle(dataBaseFileName + " - " + MainWindow.getApplicationName());
+        searchIcon.setEnabled(true);
+        resetSearchButton.setEnabled(true);
+        changeMasterPasswordMenuItem.setEnabled(true);
+        exportMenuItem.setEnabled(true);
+        importMenuItem.setEnabled(true);
+        setTitle(dataBaseFileName + " - " + applicationName);
         populateListview(dbActions.getAccountNames());
     }
 }
