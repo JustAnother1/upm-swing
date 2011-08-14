@@ -47,18 +47,15 @@ import com._17od.upm.util.Translator;
 
 public class DatabaseActions
 {
-
     private MainWindow mainWindow;
     private PasswordDatabase database;
     private ArrayList<String> accountNames;
     private PasswordDatabasePersistence dbPers;
 
-
     public DatabaseActions(MainWindow mainWindow)
     {
         this.mainWindow = mainWindow;
     }
-
 
     /**
      * This method asks the user for the name of a new database and then creates
@@ -69,21 +66,23 @@ public class DatabaseActions
      */
     public void newDatabase() throws IOException, CryptoException
     {
-
         File newDatabaseFile = getSaveAsFile(Translator.translate("newPasswordDatabase"));
         if (newDatabaseFile == null)
         {
             return;
         }
-
         final JPasswordField masterPassword = new JPasswordField("");
         boolean passwordsMatch = false;
         do
         {
-
             //Get a new master password for this database from the user
             JPasswordField confirmedMasterPassword = new JPasswordField("");
-            JOptionPane pane = new JOptionPane(new Object[] {Translator.translate("enterMasterPassword"), masterPassword, Translator.translate("confirmation"), confirmedMasterPassword}, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+            JOptionPane pane = new JOptionPane(new Object[] {Translator.translate("enterMasterPassword"),
+                                                            masterPassword,
+                                                            Translator.translate("confirmation"),
+                                                            confirmedMasterPassword},
+                                                            JOptionPane.QUESTION_MESSAGE,
+                                                            JOptionPane.OK_CANCEL_OPTION);
             JDialog dialog = pane.createDialog(mainWindow, Translator.translate("masterPassword"));
             dialog.addComponentListener(new ComponentAdapter()
             {
@@ -92,11 +91,11 @@ public class DatabaseActions
                     masterPassword.requestFocusInWindow();
                 }
             });
+            masterPassword.requestFocusInWindow();
             dialog.setVisible(true);
-
-            if (pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
+            if(pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
             {
-                if (!Arrays.equals(masterPassword.getPassword(), confirmedMasterPassword.getPassword()))
+                if(!Arrays.equals(masterPassword.getPassword(), confirmedMasterPassword.getPassword()))
                 {
                     JOptionPane.showMessageDialog(mainWindow, Translator.translate("passwordsDontMatch"));
                 }
@@ -109,24 +108,20 @@ public class DatabaseActions
             {
                 return;
             }
-
         } while (passwordsMatch == false);
-
         if (newDatabaseFile.exists())
         {
             newDatabaseFile.delete();
         }
-
         database = new PasswordDatabase(newDatabaseFile);
         dbPers = new PasswordDatabasePersistence(masterPassword.getPassword());
         saveDatabase();
         accountNames = new ArrayList<String>();
-        doOpenDatabaseActions();
-
+        mainWindow.doOpenDatabaseActions(database.getDatabaseFile().toString());
     }
 
-
-    public void changeMasterPassword() throws IOException, ProblemReadingDatabaseFile, CryptoException, PasswordDatabaseException
+    public void changeMasterPassword() throws IOException, ProblemReadingDatabaseFile,
+                                              CryptoException, PasswordDatabaseException
     {
             //The first task is to get the current master password
             boolean passwordCorrect = false;
@@ -151,21 +146,16 @@ public class DatabaseActions
                     }
                 }
             } while (!passwordCorrect && okClicked);
-
             //If the master password was entered correctly then the next step is to get the new master password
             if (passwordCorrect == true)
             {
-
                     final JPasswordField masterPassword = new JPasswordField("");
                     boolean passwordsMatch = false;
                     Object buttonClicked;
-
                     //Ask the user for the new master password
                     //This loop will continue until the two passwords entered match or until the user hits the cancel button
                     do
                     {
-
-
                         JPasswordField confirmedMasterPassword = new JPasswordField("");
                         JOptionPane pane = new JOptionPane(new Object[] {Translator.translate("enterNewMasterPassword"), masterPassword, Translator.translate("confirmation"), confirmedMasterPassword}, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
                         JDialog dialog = pane.createDialog(mainWindow, Translator.translate("changeMasterPassword"));
@@ -176,8 +166,8 @@ public class DatabaseActions
                                 masterPassword.requestFocusInWindow();
                             }
                         });
+                        masterPassword.requestFocusInWindow();
                         dialog.setVisible(true);
-
                         buttonClicked = pane.getValue();
                         if (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)))
                         {
@@ -190,9 +180,7 @@ public class DatabaseActions
                                 passwordsMatch = true;
                             }
                         }
-
                     } while (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)) && !passwordsMatch);
-
                     //If the user clicked OK and the passwords match then change the database password
                     if (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)) && passwordsMatch)
                     {
@@ -201,24 +189,6 @@ public class DatabaseActions
                     }
             }
     }
-
-
-    private void doOpenDatabaseActions()
-    {
-        mainWindow.getAddAccountButton().setEnabled(true);
-        mainWindow.getAddAccountMenuItem().setEnabled(true);
-        mainWindow.getSearchField().setEnabled(true);
-        mainWindow.getSearchField().setText("");
-        mainWindow.getSearchIcon().setEnabled(true);
-        mainWindow.getResetSearchButton().setEnabled(true);
-        mainWindow.getChangeMasterPasswordMenuItem().setEnabled(true);
-        mainWindow.getExportMenuItem().setEnabled(true);
-        mainWindow.getImportMenuItem().setEnabled(true);
-        mainWindow.setTitle(database.getDatabaseFile() + " - " + MainWindow.getApplicationName());
-        accountNames = getAccountNames();
-        populateListview(accountNames);
-    }
-
 
     public ArrayList<String> getAccountNames()
     {
@@ -233,8 +203,6 @@ public class DatabaseActions
         return accountNames;
     }
 
-
-
     /**
      * Prompt the user to enter a password
      * @return The password entered by the user or null of this hit escape/cancel
@@ -242,7 +210,6 @@ public class DatabaseActions
     private char[] askUserForPassword(String message)
     {
         char[] password = null;
-
         final JPasswordField masterPassword = new JPasswordField("");
         JOptionPane pane = new JOptionPane(new Object[] {message, masterPassword }, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
         JDialog dialog = pane.createDialog(mainWindow, Translator.translate("masterPassword"));
@@ -255,33 +222,28 @@ public class DatabaseActions
         });
         masterPassword.requestFocusInWindow();
         dialog.setVisible(true);
-
         if (pane.getValue() != null && pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
         {
             password = masterPassword.getPassword();
         }
-
         return password;
     }
-
 
     public void openDatabase(String databaseFilename) throws IOException, ProblemReadingDatabaseFile, CryptoException
     {
         openDatabase(databaseFilename, null);
     }
 
-
     public void openDatabase(String databaseFilename, char[] password) throws IOException, ProblemReadingDatabaseFile, CryptoException
     {
-
         boolean passwordCorrect = false;
         boolean okClicked = true;
         while (!passwordCorrect && okClicked) {
             // If we weren't given a password then ask the user to enter one
-            if (password == null)
+            if(password == null)
             {
                 password = askUserForPassword(Translator.translate("enterDatabasePassword"));
-                if (password == null)
+                if(password == null)
                 {
                     okClicked = false;
                 }
@@ -291,7 +253,7 @@ public class DatabaseActions
                 okClicked = true;
             }
 
-            if (okClicked)
+            if(true == okClicked)
             {
                 try
                 {
@@ -299,32 +261,28 @@ public class DatabaseActions
                     database = dbPers.load(new File(databaseFilename), password);
                     passwordCorrect = true;
                 }
-                catch (InvalidPasswordException e)
+                catch(InvalidPasswordException e)
                 {
                     JOptionPane.showMessageDialog(mainWindow, Translator.translate("incorrectPassword"));
                     password = null;
                 }
             }
         }
-
-        if (passwordCorrect)
+        if(passwordCorrect)
         {
-            doOpenDatabaseActions();
+            mainWindow.doOpenDatabaseActions(database.getDatabaseFile().toString());
         }
-
     }
-
 
     public void openDatabase() throws IOException, ProblemReadingDatabaseFile, CryptoException
     {
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle(Translator.translate("openDatabase"));
         int returnVal = fc.showOpenDialog(mainWindow);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION)
+        if(returnVal == JFileChooser.APPROVE_OPTION)
         {
             File databaseFile = fc.getSelectedFile();
-            if (databaseFile.exists())
+            if(databaseFile.exists())
             {
                 openDatabase(databaseFile.getAbsolutePath());
             }
@@ -335,14 +293,15 @@ public class DatabaseActions
         }
     }
 
-
     public void deleteAccount() throws IOException, CryptoException, ProblemReadingDatabaseFile, PasswordDatabaseException
     {
             SortedListModel listview = (SortedListModel) mainWindow.getAccountsListview().getModel();
             String selectedAccName = (String) mainWindow.getAccountsListview().getSelectedValue();
-
-            int buttonSelected = JOptionPane.showConfirmDialog(mainWindow, Translator.translate("askConfirmDeleteAccount", selectedAccName), Translator.translate("confirmDeleteAccount"), JOptionPane.YES_NO_OPTION);
-            if (buttonSelected == JOptionPane.OK_OPTION)
+            int buttonSelected = JOptionPane.showConfirmDialog(mainWindow,
+                                                            Translator.translate("askConfirmDeleteAccount", selectedAccName),
+                                                            Translator.translate("confirmDeleteAccount"),
+                                                            JOptionPane.YES_NO_OPTION);
+            if(buttonSelected == JOptionPane.OK_OPTION)
             {
                 //Remove the account from the listview, accountNames arraylist & the database
                 listview.removeElement(selectedAccName);
@@ -356,7 +315,6 @@ public class DatabaseActions
             }
     }
 
-
     public void addAccount() throws IOException, CryptoException, ProblemReadingDatabaseFile, PasswordDatabaseException
     {
         //Initialise the AccountDialog
@@ -365,9 +323,8 @@ public class DatabaseActions
         accDialog.pack();
         accDialog.setLocationRelativeTo(mainWindow);
         accDialog.setVisible(true);
-
         //If the user press OK then save the new account to the database
-        if (accDialog.okClicked())
+        if(accDialog.okClicked())
         {
             database.deleteAccount(accInfo.getAccountName());
             database.addAccount(accInfo);
@@ -377,7 +334,6 @@ public class DatabaseActions
             filter();
         }
     }
-
 
     public AccountInformation getSelectedAccount()
     {
@@ -394,106 +350,54 @@ public class DatabaseActions
         accDialog.setVisible(true);
     }
 
-
     public void editAccount() throws ProblemReadingDatabaseFile, IOException, CryptoException, PasswordDatabaseException
     {
-            AccountInformation accInfo = getSelectedAccount();
-            String selectedAccName = (String) accInfo.getAccountName();
-            AccountDialog accDialog = new AccountDialog(accInfo, mainWindow, false, accountNames);
-            accDialog.pack();
-            accDialog.setLocationRelativeTo(mainWindow);
-            accDialog.setVisible(true);
-
-            //If the ok button was clicked then save the account to the database and update the
-            //listview with the new account name (if it's changed)
-            if (accDialog.okClicked() && accDialog.getAccountChanged())
+        AccountInformation accInfo = getSelectedAccount();
+        String selectedAccName = (String) accInfo.getAccountName();
+        AccountDialog accDialog = new AccountDialog(accInfo, mainWindow, false, accountNames);
+        accDialog.pack();
+        accDialog.setLocationRelativeTo(mainWindow);
+        accDialog.setVisible(true);
+        //If the ok button was clicked then save the account to the database and update the
+        //listview with the new account name (if it's changed)
+        if (accDialog.okClicked() && accDialog.getAccountChanged())
+        {
+            accInfo = accDialog.getAccount();
+            database.deleteAccount(selectedAccName);
+            database.addAccount(accInfo);
+            saveDatabase();
+            //If the new account name is different to the old account name then update the
+            //accountNames array and refilter the listview
+            if (!accInfo.getAccountName().equals(selectedAccName))
             {
-                accInfo = accDialog.getAccount();
-                database.deleteAccount(selectedAccName);
-                database.addAccount(accInfo);
-                saveDatabase();
-                //If the new account name is different to the old account name then update the
-                //accountNames array and refilter the listview
-                if (!accInfo.getAccountName().equals(selectedAccName))
-                {
-                    int i = accountNames.indexOf(selectedAccName);
-                    accountNames.remove(i);
-                    accountNames.add(accInfo.getAccountName());
-                    //[1375390] Ensure that the listview is properly filtered after an edit
-                    filter();
-                }
+                int i = accountNames.indexOf(selectedAccName);
+                accountNames.remove(i);
+                accountNames.add(accInfo.getAccountName());
+                //[1375390] Ensure that the listview is properly filtered after an edit
+                filter();
             }
+        }
     }
-
 
     public void filter()
     {
         String filterStr = mainWindow.getSearchField().getText().toLowerCase();
-
         ArrayList<String> filteredAccountsList = new ArrayList<String>();
-        for (int i=0; i<accountNames.size(); i++)
+        for(int i = 0; i < accountNames.size(); i++)
         {
             String accountName = (String) accountNames.get(i);
-            if (filterStr.equals("") || accountName.toLowerCase().indexOf(filterStr) != -1)
+            if(filterStr.equals("") || accountName.toLowerCase().indexOf(filterStr) != -1)
             {
                 filteredAccountsList.add(accountName);
             }
         }
-
-        populateListview(filteredAccountsList);
-
+        mainWindow.populateListview(filteredAccountsList);
         //If there's only one item in the Listview then select it
-        if (mainWindow.getAccountsListview().getModel().getSize() == 1)
+        if(mainWindow.getAccountsListview().getModel().getSize() == 1)
         {
             mainWindow.getAccountsListview().setSelectedIndex(0);
         }
     }
-
-
-    public void populateListview(ArrayList<String> accountNames)
-    {
-        SortedListModel listview = (SortedListModel) mainWindow.getAccountsListview().getModel();
-
-        listview.clear();
-        mainWindow.getAccountsListview().clearSelection();
-
-        for (int i=0; i<accountNames.size(); i++)
-        {
-            listview.addElement(accountNames.get(i));
-        }
-
-        setButtonState();
-    }
-
-
-    public void setButtonState()
-    {
-        if (mainWindow.getAccountsListview().getSelectedValue() == null)
-        {
-            mainWindow.getEditAccountButton().setEnabled(false);
-            mainWindow.getCopyUsernameButton().setEnabled(false);
-            mainWindow.getCopyPasswordButton().setEnabled(false);
-            mainWindow.getDeleteAccountButton().setEnabled(false);
-            mainWindow.getEditAccountMenuItem().setEnabled(false);
-            mainWindow.getCopyUsernameMenuItem().setEnabled(false);
-            mainWindow.getCopyPasswordMenuItem().setEnabled(false);
-            mainWindow.getDeleteAccountMenuItem().setEnabled(false);
-            mainWindow.getViewAccountMenuItem().setEnabled(false);
-        }
-        else
-        {
-            mainWindow.getEditAccountButton().setEnabled(true);
-            mainWindow.getCopyUsernameButton().setEnabled(true);
-            mainWindow.getCopyPasswordButton().setEnabled(true);
-            mainWindow.getDeleteAccountButton().setEnabled(true);
-            mainWindow.getEditAccountMenuItem().setEnabled(true);
-            mainWindow.getCopyUsernameMenuItem().setEnabled(true);
-            mainWindow.getCopyPasswordMenuItem().setEnabled(true);
-            mainWindow.getDeleteAccountMenuItem().setEnabled(true);
-            mainWindow.getViewAccountMenuItem().setEnabled(true);
-        }
-    }
-
 
     public void options()
     {
@@ -501,17 +405,15 @@ public class DatabaseActions
         oppDialog.pack();
         oppDialog.setLocationRelativeTo(mainWindow);
         oppDialog.setVisible(true);
-
-        if (oppDialog.hasLanguageChanged())
+        if(oppDialog.hasLanguageChanged())
         {
             mainWindow.initialiseControlsWithDefaultLanguage();
-            if (database != null)
+            if(database != null)
             {
                 setStatusBarText();
             }
         }
     }
-
 
     public void showAbout()
     {
@@ -520,7 +422,6 @@ public class DatabaseActions
         aboutDialog.setLocationRelativeTo(mainWindow);
         aboutDialog.setVisible(true);
     }
-
 
     public void resetSearch()
     {
@@ -539,12 +440,10 @@ public class DatabaseActions
         {
             return;
         }
-
         if (exportFile.exists())
         {
             exportFile.delete();
         }
-
         AccountsCSVMarshaller marshaller = new AccountsCSVMarshaller();
         try
         {
@@ -562,25 +461,22 @@ public class DatabaseActions
             JFileChooser fc = new JFileChooser();
             fc.setDialogTitle(Translator.translate("import"));
             int returnVal = fc.showOpenDialog(mainWindow);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION)
+            if(returnVal == JFileChooser.APPROVE_OPTION)
             {
                 File csvFile = fc.getSelectedFile();
-
                 // Unmarshall the accounts from the CSV file
                 try
                 {
                     AccountsCSVMarshaller marshaller = new AccountsCSVMarshaller();
                     ArrayList<AccountInformation> accountsInCSVFile = marshaller.unmarshal(csvFile);
                     ArrayList<AccountInformation> accountsToImport = new ArrayList<AccountInformation>();
-
                     boolean importCancelled = false;
                     // Add each account to the open database. If the account
                     // already exits the prompt to overwrite
-                    for (int i=0; i<accountsInCSVFile.size(); i++)
+                    for(int i=0; i<accountsInCSVFile.size(); i++)
                     {
                         AccountInformation importedAccount = (AccountInformation) accountsInCSVFile.get(i);
-                        if (database.getAccount(importedAccount.getAccountName()) != null)
+                        if(database.getAccount(importedAccount.getAccountName()) != null)
                         {
                             Object[] options = {"Overwrite Existing", "Keep Existing", "Cancel"};
                             int answer = JOptionPane.showOptionDialog(
@@ -592,24 +488,21 @@ public class DatabaseActions
                                     null,
                                     options,
                                     options[1]);
-
-                            if (answer == 1)
+                            if(answer == 1)
                             {
                                 continue; // If keep existing then continue to the next iteration
                             }
-                            else if (answer == 2)
+                            else if(answer == 2)
                             {
                                 importCancelled = true;
                                 break; // Cancel the import
                             }
                         }
-
                         accountsToImport.add(importedAccount);
                     }
-
                     if (!importCancelled && accountsToImport.size() > 0)
                     {
-                        for (int i=0; i<accountsToImport.size(); i++)
+                        for(int i=0; i<accountsToImport.size(); i++)
                         {
                             AccountInformation accountToImport = (AccountInformation) accountsToImport.get(i);
                             database.deleteAccount(accountToImport.getAccountName());
@@ -619,7 +512,6 @@ public class DatabaseActions
                         accountNames = getAccountNames();
                         filter();
                     }
-
                 }
                 catch (ImportException e)
                 {
@@ -646,35 +538,32 @@ public class DatabaseActions
     private File getSaveAsFile(String title)
     {
         File selectedFile;
-
         boolean gotValidFile = false;
         do
         {
             JFileChooser fc = new JFileChooser();
             fc.setDialogTitle(title);
             int returnVal = fc.showSaveDialog(mainWindow);
-
-            if (returnVal != JFileChooser.APPROVE_OPTION)
+            if(returnVal != JFileChooser.APPROVE_OPTION)
             {
                 return null;
             }
-
             selectedFile = fc.getSelectedFile();
-
             //Warn the user if the database file already exists
-            if (selectedFile.exists())
+            if(selectedFile.exists())
             {
                 Object[] options = {"Yes", "No"};
                 int i = JOptionPane.showOptionDialog(mainWindow,
-                        Translator.translate("fileAlreadyExistsWithFileName", selectedFile.getAbsolutePath()) + '\n' +
-                            Translator.translate("overwrite"),
-                            Translator.translate("fileAlreadyExists"),
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            options,
-                            options[1]);
-                if (i == JOptionPane.YES_OPTION)
+                                                     Translator.translate("fileAlreadyExistsWithFileName",
+                                                                        selectedFile.getAbsolutePath()) + '\n' +
+                                                                          Translator.translate("overwrite"),
+                                                     Translator.translate("fileAlreadyExists"),
+                                                     JOptionPane.YES_NO_OPTION,
+                                                     JOptionPane.QUESTION_MESSAGE,
+                                                     null,
+                                                     options,
+                                                     options[1]);
+                if(i == JOptionPane.YES_OPTION)
                 {
                     gotValidFile = true;
                 }
@@ -683,9 +572,7 @@ public class DatabaseActions
             {
                 gotValidFile = true;
             }
-
         } while (!gotValidFile);
-
         return selectedFile;
     }
 
@@ -703,5 +590,4 @@ public class DatabaseActions
         mainWindow.getStatusBar().setText(status);
         mainWindow.getStatusBar().setForeground(color);
     }
-
 }
