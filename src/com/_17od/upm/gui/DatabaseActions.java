@@ -21,12 +21,10 @@
 package com._17od.upm.gui;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -45,7 +43,6 @@ import com._17od.upm.database.PasswordDatabase;
 import com._17od.upm.database.PasswordDatabasePersistence;
 import com._17od.upm.database.ProblemReadingDatabaseFile;
 import com._17od.upm.util.Translator;
-import com._17od.upm.util.Util;
 
 
 public class DatabaseActions
@@ -95,7 +92,7 @@ public class DatabaseActions
                     masterPassword.requestFocusInWindow();
                 }
             });
-            dialog.show();
+            dialog.setVisible(true);
 
             if (pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
             {
@@ -179,7 +176,7 @@ public class DatabaseActions
                                 masterPassword.requestFocusInWindow();
                             }
                         });
-                        dialog.show();
+                        dialog.setVisible(true);
 
                         buttonClicked = pane.getValue();
                         if (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)))
@@ -203,18 +200,6 @@ public class DatabaseActions
                         saveDatabase();
                     }
             }
-    }
-
-
-    public void errorHandler(Exception e)
-    {
-        e.printStackTrace();
-        String errorMessage = e.getMessage();
-        if (errorMessage == null)
-        {
-            errorMessage = e.getClass().getName();
-        }
-        JOptionPane.showMessageDialog(mainWindow, errorMessage, Translator.translate("error"), JOptionPane.ERROR_MESSAGE);
     }
 
 
@@ -269,7 +254,7 @@ public class DatabaseActions
                 masterPassword.requestFocusInWindow();
             }
         });
-        dialog.show();
+        dialog.setVisible(true);
 
         if (pane.getValue() != null && pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
         {
@@ -379,7 +364,7 @@ public class DatabaseActions
         AccountDialog accDialog = new AccountDialog(accInfo, mainWindow, false, accountNames);
         accDialog.pack();
         accDialog.setLocationRelativeTo(mainWindow);
-        accDialog.show();
+        accDialog.setVisible(true);
 
         //If the user press OK then save the new account to the database
         if (accDialog.okClicked())
@@ -406,7 +391,7 @@ public class DatabaseActions
         AccountDialog accDialog = new AccountDialog(accInfo, mainWindow, true, accountNames);
         accDialog.pack();
         accDialog.setLocationRelativeTo(mainWindow);
-        accDialog.show();
+        accDialog.setVisible(true);
     }
 
 
@@ -417,7 +402,7 @@ public class DatabaseActions
             AccountDialog accDialog = new AccountDialog(accInfo, mainWindow, false, accountNames);
             accDialog.pack();
             accDialog.setLocationRelativeTo(mainWindow);
-            accDialog.show();
+            accDialog.setVisible(true);
 
             //If the ok button was clicked then save the account to the database and update the
             //listview with the new account name (if it's changed)
@@ -457,7 +442,7 @@ public class DatabaseActions
 
         populateListview(filteredAccountsList);
 
-        //If there's only one item in the listview then select it
+        //If there's only one item in the Listview then select it
         if (mainWindow.getAccountsListview().getModel().getSize() == 1)
         {
             mainWindow.getAccountsListview().setSelectedIndex(0);
@@ -515,7 +500,7 @@ public class DatabaseActions
         OptionsDialog oppDialog = new OptionsDialog(mainWindow);
         oppDialog.pack();
         oppDialog.setLocationRelativeTo(mainWindow);
-        oppDialog.show();
+        oppDialog.setVisible(true);
 
         if (oppDialog.hasLanguageChanged())
         {
@@ -533,7 +518,7 @@ public class DatabaseActions
         AboutDialog aboutDialog = new AboutDialog(mainWindow);
         aboutDialog.pack();
         aboutDialog.setLocationRelativeTo(mainWindow);
-        aboutDialog.show();
+        aboutDialog.setVisible(true);
     }
 
 
@@ -542,33 +527,12 @@ public class DatabaseActions
         mainWindow.getSearchField().setText("");
     }
 
-
-    private static void replaceDatabase(PasswordDatabase existingDatabase, PasswordDatabase newDatabase) throws PasswordDatabaseException
-    {
-        // Delete the existing database and then copy the new db into it's place
-        String dbFileName = existingDatabase.getDatabaseFile().getAbsolutePath();
-        boolean successful = existingDatabase.getDatabaseFile().delete();
-        if (successful)
-        {
-            successful = newDatabase.getDatabaseFile().renameTo(new File(dbFileName));
-            if (!successful)
-            {
-                throw new PasswordDatabaseException(Translator.translate("couldntRename", new Object[] {existingDatabase.getDatabaseFile().getAbsolutePath(), existingDatabase.getDatabaseFile().getName()}));
-            }
-        }
-        else
-        {
-            throw new PasswordDatabaseException(Translator.translate("couldntDelete"));
-        }
-    }
-
-
     public void showDatabaseProperties() throws ProblemReadingDatabaseFile, IOException, CryptoException, PasswordDatabaseException
     {
         DatabasePropertiesDialog dbPropsDialog = new DatabasePropertiesDialog(mainWindow, getAccountNames(), database);
         dbPropsDialog.pack();
         dbPropsDialog.setLocationRelativeTo(mainWindow);
-        dbPropsDialog.show();
+        dbPropsDialog.setVisible(true);
         if (dbPropsDialog.getDatabaseNeedsSaving())
         {
             saveDatabase();

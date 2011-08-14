@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 
 public class Util
@@ -52,6 +53,17 @@ public class Util
         }
         in.close();
         out.close();
+    }
+
+    public static void errorHandler(Exception e)
+    {
+        e.printStackTrace();
+        String errorMessage = e.getMessage();
+        if(null == errorMessage)
+        {
+            errorMessage = "Class: " + e.getClass().getName();
+        }
+        JOptionPane.showMessageDialog(null, errorMessage, Translator.translate("error"), JOptionPane.ERROR_MESSAGE);
     }
 
 }

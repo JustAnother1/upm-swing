@@ -28,8 +28,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -52,6 +50,7 @@ import java.util.Arrays;
 public class DatabasePropertiesDialog extends EscapeDialog
 {
 
+    private static final long serialVersionUID = 1L;
     private boolean databaseNeedsSaving = false;
 
     public DatabasePropertiesDialog(final JFrame frame, ArrayList accountNames, final PasswordDatabase database)
@@ -162,22 +161,6 @@ public class DatabasePropertiesDialog extends EscapeDialog
         buttonPanel.add(cancelButton);
 
     }
-
-
-    private URL validateURL(String urlString)
-    {
-        URL url = null;
-        try
-        {
-            url = new URL(urlString);
-        }
-        catch (MalformedURLException e)
-        {
-            // If we got here the the URL is invalid
-        }
-        return url;
-    }
-
 
     private void saveDatabaseOptions(JFrame parentFrame, String remoteLocation, String authEntry, PasswordDatabase database)
     {

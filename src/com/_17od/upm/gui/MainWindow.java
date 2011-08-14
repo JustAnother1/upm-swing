@@ -74,6 +74,7 @@ import com._17od.upm.util.Util;
  */
 public class MainWindow extends JFrame implements ActionListener
 {
+    private static final long serialVersionUID = 1L;
 
     private static final String applicationName = "Universal Password Manager";
 
@@ -163,7 +164,7 @@ public class MainWindow extends JFrame implements ActionListener
                 File dbFile = new File(db);
                 if (!dbFile.exists())
                 {
-                    dbActions.errorHandler(new Exception(Translator.translate("dbDoesNotExist", db)));
+                    Util.errorHandler(new Exception(Translator.translate("dbDoesNotExist", db)));
                 }
                 else
                 {
@@ -173,11 +174,11 @@ public class MainWindow extends JFrame implements ActionListener
         }
         catch (Exception e)
         {
-            dbActions.errorHandler(e);
+            Util.errorHandler(e);
         }
 
-        //Give the search field focus
-        // I'm using requestFocusInWindow() rathar than requestFocus()
+        // Give the search field focus
+        // I'm using requestFocusInWindow() rather than requestFocus()
         // because the javadocs recommend it
         searchField.requestFocusInWindow();
 
@@ -869,7 +870,7 @@ public class MainWindow extends JFrame implements ActionListener
         }
         catch (Exception e)
         {
-            dbActions.errorHandler(e);
+            Util.errorHandler(e);
         }
     }
 
