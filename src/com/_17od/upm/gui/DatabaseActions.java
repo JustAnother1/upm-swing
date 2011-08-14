@@ -212,7 +212,6 @@ public class DatabaseActions
         mainWindow.getSearchIcon().setEnabled(true);
         mainWindow.getResetSearchButton().setEnabled(true);
         mainWindow.getChangeMasterPasswordMenuItem().setEnabled(true);
-        mainWindow.getDatabasePropertiesMenuItem().setEnabled(true);
         mainWindow.getExportMenuItem().setEnabled(true);
         mainWindow.getImportMenuItem().setEnabled(true);
         mainWindow.setTitle(database.getDatabaseFile() + " - " + MainWindow.getApplicationName());
@@ -528,23 +527,10 @@ public class DatabaseActions
         mainWindow.getSearchField().setText("");
     }
 
-    public void showDatabaseProperties() throws ProblemReadingDatabaseFile, IOException, CryptoException, PasswordDatabaseException
-    {
-        DatabasePropertiesDialog dbPropsDialog = new DatabasePropertiesDialog(mainWindow, getAccountNames(), database);
-        dbPropsDialog.pack();
-        dbPropsDialog.setLocationRelativeTo(mainWindow);
-        dbPropsDialog.setVisible(true);
-        if (dbPropsDialog.getDatabaseNeedsSaving())
-        {
-            saveDatabase();
-        }
-    }
-
     public void exitApplication()
     {
         System.exit(0);
     }
-
 
     public void export()
     {
@@ -569,7 +555,6 @@ public class DatabaseActions
             JOptionPane.showMessageDialog(mainWindow, e.getMessage(), Translator.translate("problemExporting"), JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
     public void importAccounts() throws ProblemReadingDatabaseFile, IOException, CryptoException, PasswordDatabaseException
     {
@@ -651,7 +636,6 @@ public class DatabaseActions
             }
     }
 
-
     /**
      * This method prompts the user for the name of a file.
      * If the file exists then it will ask if they want to overwrite (the file isn't overwritten though,
@@ -704,7 +688,6 @@ public class DatabaseActions
 
         return selectedFile;
     }
-
 
     private void saveDatabase() throws IOException, CryptoException
     {

@@ -80,10 +80,7 @@ public class MainWindow extends JFrame implements ActionListener
 
     public static final String NEW_DATABASE_TXT = "newDatabaseMenuItem";
     public static final String OPEN_DATABASE_TXT = "openDatabaseMenuItem";
-    public static final String OPEN_DATABASE_FROM_URL_TXT = "openDatabaseFromURLMenuItem";
-    public static final String SYNC_DATABASE_TXT = "syncWithRemoteDatabaseMenuItem";
     public static final String CHANGE_MASTER_PASSWORD_TXT = "changeMasterPasswordMenuItem";
-    public static final String DATABASE_PROPERTIES_TXT = "databasePropertiesMenuItem";
     public static final String ADD_ACCOUNT_TXT = "addAccountMenuItem";
     public static final String EDIT_ACCOUNT_TXT = "editAccountMenuItem";
     public static final String DELETE_ACCOUNT_TXT = "deleteAccountMenuItem";
@@ -103,7 +100,6 @@ public class MainWindow extends JFrame implements ActionListener
     private JButton copyUsernameButton;
     private JButton copyPasswordButton;
     private JButton optionsButton;
-    private JButton syncDatabaseButton;
     private JTextField searchField;
     private JButton resetSearchButton;
     private JLabel searchIcon;
@@ -111,10 +107,7 @@ public class MainWindow extends JFrame implements ActionListener
     private JMenu databaseMenu;
     private JMenuItem newDatabaseMenuItem;
     private JMenuItem openDatabaseMenuItem;
-    private JMenuItem openDatabaseFromURLMenuItem;
-    private JMenuItem syncWithRemoteDatabaseMenuItem;
     private JMenuItem changeMasterPasswordMenuItem;
-    private JMenuItem databasePropertiesMenuItem;
     private JMenuItem exitMenuItem;
     private JMenu helpMenu;
     private JMenuItem aboutMenuItem;
@@ -488,18 +481,6 @@ public class MainWindow extends JFrame implements ActionListener
         optionsButton.setActionCommand(OPTIONS_TXT);
         toolbar.add(optionsButton);
 
-        toolbar.addSeparator();
-
-        // The Sync database button
-        syncDatabaseButton = new JButton();
-        syncDatabaseButton.setToolTipText(Translator.translate(SYNC_DATABASE_TXT));
-        syncDatabaseButton.setIcon(Util.loadImage("sync.png"));
-        syncDatabaseButton.setDisabledIcon(Util.loadImage("sync_d.png"));;
-        syncDatabaseButton.addActionListener(this);
-        syncDatabaseButton.setEnabled(false);
-        syncDatabaseButton.setActionCommand(SYNC_DATABASE_TXT);
-        toolbar.add(syncDatabaseButton);
-
         return toolbar;
     }
 
@@ -526,22 +507,9 @@ public class MainWindow extends JFrame implements ActionListener
         openDatabaseMenuItem.addActionListener(this);
         openDatabaseMenuItem.setActionCommand(OPEN_DATABASE_TXT);
 
-        openDatabaseFromURLMenuItem = new JMenuItem(Translator.translate(OPEN_DATABASE_FROM_URL_TXT), KeyEvent.VK_L);
-        openDatabaseFromURLMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        databaseMenu.add(openDatabaseFromURLMenuItem);
-        openDatabaseFromURLMenuItem.addActionListener(this);
-        openDatabaseFromURLMenuItem.setActionCommand(OPEN_DATABASE_FROM_URL_TXT);
 
         databaseMenu.addSeparator();
 
-        syncWithRemoteDatabaseMenuItem = new JMenuItem(Translator.translate(SYNC_DATABASE_TXT), KeyEvent.VK_S);
-        syncWithRemoteDatabaseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        databaseMenu.add(syncWithRemoteDatabaseMenuItem);
-        syncWithRemoteDatabaseMenuItem.addActionListener(this);
-        syncWithRemoteDatabaseMenuItem.setEnabled(false);
-        syncWithRemoteDatabaseMenuItem.setActionCommand(SYNC_DATABASE_TXT);
 
         changeMasterPasswordMenuItem = new JMenuItem(Translator.translate(CHANGE_MASTER_PASSWORD_TXT), KeyEvent.VK_G);
         changeMasterPasswordMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G,
@@ -550,14 +518,6 @@ public class MainWindow extends JFrame implements ActionListener
         changeMasterPasswordMenuItem.addActionListener(this);
         changeMasterPasswordMenuItem.setEnabled(false);
         changeMasterPasswordMenuItem.setActionCommand(CHANGE_MASTER_PASSWORD_TXT);
-
-        databasePropertiesMenuItem = new JMenuItem(Translator.translate(DATABASE_PROPERTIES_TXT), KeyEvent.VK_I);
-        databasePropertiesMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        databaseMenu.add(databasePropertiesMenuItem);
-        databasePropertiesMenuItem.addActionListener(this);
-        databasePropertiesMenuItem.setEnabled(false);
-        databasePropertiesMenuItem.setActionCommand(DATABASE_PROPERTIES_TXT);
 
         databaseMenu.addSeparator();
 
@@ -800,13 +760,6 @@ public class MainWindow extends JFrame implements ActionListener
         return changeMasterPasswordMenuItem;
     }
 
-
-    public JMenuItem getDatabasePropertiesMenuItem()
-    {
-        return databasePropertiesMenuItem;
-    }
-
-
     public void actionPerformed(ActionEvent event)
     {
         try
@@ -851,10 +804,6 @@ public class MainWindow extends JFrame implements ActionListener
             {
                 dbActions.changeMasterPassword();
             }
-            else if (event.getActionCommand() == MainWindow.DATABASE_PROPERTIES_TXT)
-            {
-                dbActions.showDatabaseProperties();
-            }
             else if (event.getActionCommand() == MainWindow.EXIT_TXT)
             {
                 dbActions.exitApplication();
@@ -874,36 +823,20 @@ public class MainWindow extends JFrame implements ActionListener
         }
     }
 
-
-    public JButton getSyncWithRemoteDatabaseButton()
-    {
-        return syncDatabaseButton;
-    }
-
-
-    public JMenuItem getSyncWithRemoteDatabaseMenuItem()
-    {
-        return syncWithRemoteDatabaseMenuItem;
-    }
-
-
     public JMenuItem getExportMenuItem()
     {
         return exportMenuItem;
     }
-
 
     public JMenuItem getImportMenuItem()
     {
         return importMenuItem;
     }
 
-
     public JLabel getStatusBar()
     {
         return statusBar;
     }
-
 
     /**
      * Initialize all the menus, buttons, etc to take account of the language selected by the user
@@ -913,10 +846,7 @@ public class MainWindow extends JFrame implements ActionListener
         databaseMenu.setText(Translator.translate("databaseMenu"));
         newDatabaseMenuItem.setText(Translator.translate(NEW_DATABASE_TXT));
         openDatabaseMenuItem.setText(Translator.translate(OPEN_DATABASE_TXT));
-        openDatabaseFromURLMenuItem.setText(Translator.translate(OPEN_DATABASE_FROM_URL_TXT));
-        syncWithRemoteDatabaseMenuItem.setText(Translator.translate(SYNC_DATABASE_TXT));
         changeMasterPasswordMenuItem.setText(Translator.translate(CHANGE_MASTER_PASSWORD_TXT));
-        databasePropertiesMenuItem.setText(Translator.translate(DATABASE_PROPERTIES_TXT));
         accountMenu.setText(Translator.translate("accountMenu"));
         addAccountMenuItem.setText(Translator.translate(ADD_ACCOUNT_TXT));
         editAccountMenuItem.setText(Translator.translate(EDIT_ACCOUNT_TXT));
@@ -934,7 +864,6 @@ public class MainWindow extends JFrame implements ActionListener
         copyUsernameButton.setToolTipText(Translator.translate(COPY_USERNAME_TXT));
         copyPasswordButton.setToolTipText(Translator.translate(COPY_PASSWORD_TXT));
         optionsButton.setToolTipText(Translator.translate(OPTIONS_TXT));
-        syncDatabaseButton.setToolTipText(Translator.translate(SYNC_DATABASE_TXT));
         optionsButton.setToolTipText(Translator.translate(OPTIONS_TXT));
         resetSearchButton.setToolTipText(Translator.translate(RESET_SEARCH_TXT));
     }
