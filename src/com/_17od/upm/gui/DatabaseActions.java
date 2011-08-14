@@ -71,50 +71,18 @@ public class DatabaseActions
         {
             return;
         }
-        final JPasswordField masterPassword = new JPasswordField("");
-        boolean passwordsMatch = false;
-        do
+        char[] password = askUserForPassword(Translator.translate("enterMasterPassword"), true);
+        if(null == password)
         {
-            //Get a new master password for this database from the user
-            JPasswordField confirmedMasterPassword = new JPasswordField("");
-            JOptionPane pane = new JOptionPane(new Object[] {Translator.translate("enterMasterPassword"),
-                                                            masterPassword,
-                                                            Translator.translate("confirmation"),
-                                                            confirmedMasterPassword},
-                                                            JOptionPane.QUESTION_MESSAGE,
-                                                            JOptionPane.OK_CANCEL_OPTION);
-            JDialog dialog = pane.createDialog(mainWindow, Translator.translate("masterPassword"));
-            dialog.addComponentListener(new ComponentAdapter()
-            {
-                public void componentShown(ComponentEvent e)
-                {
-                    masterPassword.requestFocusInWindow();
-                }
-            });
-            masterPassword.requestFocusInWindow();
-            dialog.setVisible(true);
-            if(pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
-            {
-                if(!Arrays.equals(masterPassword.getPassword(), confirmedMasterPassword.getPassword()))
-                {
-                    JOptionPane.showMessageDialog(mainWindow, Translator.translate("passwordsDontMatch"));
-                }
-                else
-                {
-                    passwordsMatch = true;
-                }
-            }
-            else
-            {
-                return;
-            }
-        } while (passwordsMatch == false);
+            // user canceled dialog
+            return;
+        }
         if (newDatabaseFile.exists())
         {
             newDatabaseFile.delete();
         }
         database = new PasswordDatabase(newDatabaseFile);
-        dbPers = new PasswordDatabasePersistence(masterPassword.getPassword());
+        dbPers = new PasswordDatabasePersistence(password);
         saveDatabase();
         accountNames = new ArrayList<String>();
         mainWindow.doOpenDatabaseActions(database.getDatabaseFile().toString());
@@ -123,71 +91,45 @@ public class DatabaseActions
     public void changeMasterPassword() throws IOException, ProblemReadingDatabaseFile,
                                               CryptoException, PasswordDatabaseException
     {
-            //The first task is to get the current master password
-            boolean passwordCorrect = false;
-            boolean okClicked = true;
-            do
+        //The first task is to get the current master password
+        boolean passwordCorrect = false;
+        boolean okClicked = true;
+        do
+        {
+            char[] password = askUserForPassword(Translator.translate("enterDatabasePassword"), false);
+            if (password == null)
             {
-                char[] password = askUserForPassword(Translator.translate("enterDatabasePassword"));
-                if (password == null)
-                {
-                    okClicked = false;
-                }
-                else
-                {
-                    try
-                    {
-                        dbPers.load(database.getDatabaseFile(), password);
-                        passwordCorrect = true;
-                    }
-                    catch (InvalidPasswordException e)
-                    {
-                        JOptionPane.showMessageDialog(mainWindow, Translator.translate("incorrectPassword"));
-                    }
-                }
-            } while (!passwordCorrect && okClicked);
-            //If the master password was entered correctly then the next step is to get the new master password
-            if (passwordCorrect == true)
-            {
-                    final JPasswordField masterPassword = new JPasswordField("");
-                    boolean passwordsMatch = false;
-                    Object buttonClicked;
-                    //Ask the user for the new master password
-                    //This loop will continue until the two passwords entered match or until the user hits the cancel button
-                    do
-                    {
-                        JPasswordField confirmedMasterPassword = new JPasswordField("");
-                        JOptionPane pane = new JOptionPane(new Object[] {Translator.translate("enterNewMasterPassword"), masterPassword, Translator.translate("confirmation"), confirmedMasterPassword}, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-                        JDialog dialog = pane.createDialog(mainWindow, Translator.translate("changeMasterPassword"));
-                        dialog.addComponentListener(new ComponentAdapter()
-                        {
-                            public void componentShown(ComponentEvent e)
-                            {
-                                masterPassword.requestFocusInWindow();
-                            }
-                        });
-                        masterPassword.requestFocusInWindow();
-                        dialog.setVisible(true);
-                        buttonClicked = pane.getValue();
-                        if (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)))
-                        {
-                            if (!Arrays.equals(masterPassword.getPassword(), confirmedMasterPassword.getPassword()))
-                            {
-                                JOptionPane.showMessageDialog(mainWindow, Translator.translate("passwordsDontMatch"));
-                            }
-                            else
-                            {
-                                passwordsMatch = true;
-                            }
-                        }
-                    } while (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)) && !passwordsMatch);
-                    //If the user clicked OK and the passwords match then change the database password
-                    if (buttonClicked.equals(new Integer(JOptionPane.OK_OPTION)) && passwordsMatch)
-                    {
-                        this.dbPers.getEncryptionService().initCipher(masterPassword.getPassword());
-                        saveDatabase();
-                    }
+                okClicked = false;
             }
+            else
+            {
+                try
+                {
+                    dbPers.load(database.getDatabaseFile(), password);
+                    passwordCorrect = true;
+                }
+                catch (InvalidPasswordException e)
+                {
+                    JOptionPane.showMessageDialog(mainWindow, Translator.translate("incorrectPassword"));
+                }
+            }
+        } while (!passwordCorrect && okClicked);
+        //If the master password was entered correctly then the next step is to get the new master password
+        if (passwordCorrect == true)
+        {
+            char[] password = askUserForPassword(Translator.translate("enterNewMasterPassword"), true);
+            if(null == password)
+            {
+                // user canceled dialog
+                return;
+            }
+            else
+            {
+                //If the user clicked OK and the passwords match then change the database password
+                this.dbPers.getEncryptionService().initCipher(password);
+                saveDatabase();
+            }
+        }
     }
 
     public ArrayList<String> getAccountNames()
@@ -207,25 +149,66 @@ public class DatabaseActions
      * Prompt the user to enter a password
      * @return The password entered by the user or null of this hit escape/cancel
      */
-    private char[] askUserForPassword(String message)
+    private char[] askUserForPassword(String message, boolean mustConfirm)
     {
         char[] password = null;
         final JPasswordField masterPassword = new JPasswordField("");
-        JOptionPane pane = new JOptionPane(new Object[] {message, masterPassword }, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = pane.createDialog(mainWindow, Translator.translate("masterPassword"));
-        dialog.addComponentListener(new ComponentAdapter()
+        boolean passwordsMatch = false;
+        do
         {
-            public void componentShown(ComponentEvent e)
+            //Get a new master password for this database from the user
+            JPasswordField confirmedMasterPassword = new JPasswordField("");
+            JOptionPane pane;
+            if(true == mustConfirm)
             {
-                masterPassword.requestFocusInWindow();
+                pane = new JOptionPane(new Object[] {message,
+                                                    masterPassword,
+                                                    Translator.translate("confirmation"),
+                                                     confirmedMasterPassword},
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    JOptionPane.OK_CANCEL_OPTION);
             }
-        });
-        masterPassword.requestFocusInWindow();
-        dialog.setVisible(true);
-        if (pane.getValue() != null && pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
-        {
-            password = masterPassword.getPassword();
-        }
+            else
+            {
+                pane = new JOptionPane(new Object[] {message, masterPassword },
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    JOptionPane.OK_CANCEL_OPTION);
+            }
+            JDialog dialog = pane.createDialog(mainWindow, Translator.translate("masterPassword"));
+            dialog.addComponentListener(new ComponentAdapter()
+                                        {
+                                            public void componentShown(ComponentEvent e)
+                                            {
+                                                masterPassword.requestFocusInWindow();
+                                            }
+                                        });
+            dialog.requestFocusInWindow();
+            pane.requestFocusInWindow();
+            masterPassword.requestFocusInWindow();
+            dialog.setVisible(true);
+            if(pane.getValue() != null && pane.getValue().equals(new Integer(JOptionPane.OK_OPTION)))
+            {
+                if(true == mustConfirm)
+                {
+                    if(!Arrays.equals(masterPassword.getPassword(), confirmedMasterPassword.getPassword()))
+                    {
+                        JOptionPane.showMessageDialog(mainWindow, Translator.translate("passwordsDontMatch"));
+                    }
+                    else
+                    {
+                        passwordsMatch = true;
+                    }
+                }
+                else
+                {
+                    password = masterPassword.getPassword();
+                }
+            }
+            else
+            {
+                return null;
+            }
+        } while ((passwordsMatch == false) && (true == mustConfirm));
         return password;
     }
 
@@ -242,7 +225,7 @@ public class DatabaseActions
             // If we weren't given a password then ask the user to enter one
             if(password == null)
             {
-                password = askUserForPassword(Translator.translate("enterDatabasePassword"));
+                password = askUserForPassword(Translator.translate("enterDatabasePassword"), false);
                 if(password == null)
                 {
                     okClicked = false;
