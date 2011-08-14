@@ -30,14 +30,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import com._17od.upm.crypto.CryptoException;
-import com._17od.upm.crypto.DESDecryptionService;
 import com._17od.upm.crypto.EncryptionService;
 import com._17od.upm.crypto.InvalidPasswordException;
 
@@ -89,7 +87,7 @@ public class PasswordDatabasePersistence
         // Get the database version
         byte dbVersion = fullDatabase[dbVersionPos];
 
-        if (dbVersion == 3)
+        if(3 == dbVersion)
         {
             byte[] salt = new byte[EncryptionService.SALT_LENGTH];
             System.arraycopy(fullDatabase, saltPos, salt, 0, EncryptionService.SALT_LENGTH);

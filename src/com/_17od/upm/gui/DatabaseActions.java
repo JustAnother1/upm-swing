@@ -54,7 +54,6 @@ public class DatabaseActions
     private MainWindow mainWindow;
     private PasswordDatabase database;
     private ArrayList accountNames;
-    private boolean localDatabaseDirty = true;
     private PasswordDatabasePersistence dbPers;
 
 
@@ -231,11 +230,7 @@ public class DatabaseActions
         mainWindow.getDatabasePropertiesMenuItem().setEnabled(true);
         mainWindow.getExportMenuItem().setEnabled(true);
         mainWindow.getImportMenuItem().setEnabled(true);
-
         mainWindow.setTitle(database.getDatabaseFile() + " - " + MainWindow.getApplicationName());
-
-        setLocalDatabaseDirty(true);
-
         accountNames = getAccountNames();
         populateListview(accountNames);
     }
@@ -749,18 +744,7 @@ public class DatabaseActions
     private void saveDatabase() throws IOException, CryptoException
     {
         dbPers.save(database);
-        setLocalDatabaseDirty(false);
     }
-
-
-    private void setLocalDatabaseDirty(boolean dirty)
-    {
-        localDatabaseDirty = dirty;
-        mainWindow.getSyncWithRemoteDatabaseMenuItem().setEnabled(false);
-        mainWindow.getSyncWithRemoteDatabaseButton().setEnabled(false);
-        setStatusBarText();
-    }
-
 
     private void setStatusBarText()
     {

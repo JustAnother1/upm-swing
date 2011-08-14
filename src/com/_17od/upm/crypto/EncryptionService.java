@@ -21,13 +21,14 @@
 package com._17od.upm.crypto;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.PBEParametersGenerator;
-import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.generators.PKCS12ParametersGenerator;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
@@ -39,7 +40,7 @@ public class EncryptionService
 {
 
     private static final String randomAlgorithm = "SHA1PRNG";
-    public static final int SALT_LENGTH = 8;
+    public static final int SALT_LENGTH = 64;
 
     private byte[] salt;
     private BufferedBlockCipher encryptCipher;
@@ -55,6 +56,10 @@ public class EncryptionService
         {
             throw new CryptoException(e);
         }
+        catch (NoSuchProviderException e)
+        {
+            throw new CryptoException(e);
+        }
         initCipher(password);
     }
 
@@ -66,8 +71,8 @@ public class EncryptionService
 
     public void initCipher(char[] password)
     {
-        PBEParametersGenerator keyGenerator = new PKCS12ParametersGenerator(new SHA256Digest());
-        keyGenerator.init(PKCS12ParametersGenerator.PKCS12PasswordToBytes(password), salt, 20);
+        PBEParametersGenerator keyGenerator = new PKCS12ParametersGenerator(new SHA512Digest());
+        keyGenerator.init(PKCS12ParametersGenerator.PKCS12PasswordToBytes(password), salt, 5000);
         CipherParameters keyParams = keyGenerator.generateDerivedParameters(256, 128);
 
         encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new PKCS7Padding());
@@ -76,9 +81,10 @@ public class EncryptionService
         decryptCipher.init(false, keyParams);
     }
 
-    private byte[] generateSalt() throws NoSuchAlgorithmException
+    private byte[] generateSalt() throws NoSuchAlgorithmException, NoSuchProviderException
     {
-        SecureRandom saltGen = SecureRandom.getInstance(randomAlgorithm);
+        SecureRandom saltGen;
+        saltGen = SecureRandom.getInstance(randomAlgorithm, "SUN");
         byte pSalt[] = new byte[SALT_LENGTH];
         saltGen.nextBytes(pSalt);
         return pSalt;
