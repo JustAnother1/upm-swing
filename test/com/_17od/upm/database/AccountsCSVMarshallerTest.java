@@ -1,11 +1,11 @@
 /*
  * $Id$
- * 
+ *
  * Universal Password Manager
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -31,7 +31,12 @@ import junit.framework.TestCase;
 
 import com.csvreader.CsvReader;
 
-public class AccountsCSVMarshallerTest extends TestCase {
+public class AccountsCSVMarshallerTest extends TestCase
+{
+
+    public static char tpw[] = {'t', 'e','s','t',' ','p','a','s','s','w','o','r','d','1'};
+    public static char tpw2[] = {'t', 'e','s','t',' ','p','a','s','s','w','o','r','d','2'};
+    public static char tpw3[] = {'t', 'e','s','t',' ','p','a','s','s','w','o','r','d','3'};
 
     public void testWithExistingFile() throws IOException {
         File exportFile = File.createTempFile("testdb_", ".upm");
@@ -47,13 +52,13 @@ public class AccountsCSVMarshallerTest extends TestCase {
 
     public void testWithOneSimpleAccount() throws ExportException, IOException {
         AccountInformation account = new AccountInformation(
-                "Test Account1", 
+                "Test Account1",
                 "testuser1".getBytes(),
-                "test password1".getBytes(), 
+                tpw,
                 "http://www.test.com1".getBytes(),
                 "this is a test note1".getBytes());
 
-        ArrayList accounts = new ArrayList();
+        ArrayList<AccountInformation> accounts = new ArrayList<AccountInformation>();
         accounts.add(account);
 
         // Marshall the database out to a CSV file
@@ -70,25 +75,25 @@ public class AccountsCSVMarshallerTest extends TestCase {
 
     public void testWithMultipleSimpleAccounts() throws IOException, ExportException {
         AccountInformation account1 = new AccountInformation(
-                "Test Account1", 
+                "Test Account1",
                 "testuser1".getBytes(),
-                "test password1".getBytes(), 
+                tpw,
                 "http://www.test.com1".getBytes(),
                 "this is a test note1".getBytes());
         AccountInformation account2 = new AccountInformation(
-                "Test Account2", 
+                "Test Account2",
                 "testuser2".getBytes(),
-                "test password2".getBytes(), 
+                tpw2,
                 "http://www.test.com2".getBytes(),
                 "this is a test note2".getBytes());
         AccountInformation account3 = new AccountInformation(
-                "Test Account3", 
+                "Test Account3",
                 "testuser3".getBytes(),
-                "test password3".getBytes(), 
+                tpw3,
                 "http://www.test.com3".getBytes(),
                 "this is a test note3".getBytes());
 
-        ArrayList accounts = new ArrayList();
+        ArrayList<AccountInformation> accounts = new ArrayList<AccountInformation>();
         accounts.add(account1);
         accounts.add(account2);
         accounts.add(account3);
@@ -111,13 +116,13 @@ public class AccountsCSVMarshallerTest extends TestCase {
 
     public void testWhenNotesHaveCRLF() throws IOException, ExportException {
         AccountInformation account = new AccountInformation(
-                "Test Account1", 
+                "Test Account1",
                 "testuser1".getBytes(),
-                "test password1".getBytes(), 
+                tpw,
                 "http://www.test.com1".getBytes(),
                 "this is a \ntest note1".getBytes());
 
-        ArrayList accounts = new ArrayList();
+        ArrayList<AccountInformation> accounts = new ArrayList<AccountInformation>();
         accounts.add(account);
 
         // Marshall the database out to a CSV file
@@ -134,13 +139,13 @@ public class AccountsCSVMarshallerTest extends TestCase {
 
     public void testWhenNotesHasComma() throws IOException, ExportException {
         AccountInformation account = new AccountInformation(
-                "Test Account1", 
+                "Test Account1",
                 "testuser1".getBytes(),
-                "test password1".getBytes(), 
+                tpw,
                 "http://www.test.com1".getBytes(),
                 "this is a ,test note1".getBytes());
 
-        ArrayList accounts = new ArrayList();
+        ArrayList<AccountInformation> accounts = new ArrayList<AccountInformation>();
         accounts.add(account);
 
         // Marshall the database out to a CSV file
@@ -157,13 +162,13 @@ public class AccountsCSVMarshallerTest extends TestCase {
 
     public void testImport() throws IOException, ExportException, ImportException {
         AccountInformation account = new AccountInformation(
-                "Test Account1", 
+                "Test Account1",
                 "testuser1".getBytes(),
-                "test password1".getBytes(), 
+                tpw,
                 "http://www.test.com1".getBytes(),
                 "this is a test note1".getBytes());
 
-        ArrayList accounts = new ArrayList();
+        ArrayList<AccountInformation> accounts = new ArrayList<AccountInformation>();
         accounts.add(account);
 
         // Marshall the database out to a CSV file
@@ -172,9 +177,9 @@ public class AccountsCSVMarshallerTest extends TestCase {
         AccountsCSVMarshaller marshaller = new AccountsCSVMarshaller();
         marshaller.marshal(accounts, csvFile);
 
-        // do the import and ensure the AccountInformation object we get back 
+        // do the import and ensure the AccountInformation object we get back
         // is correct
-        ArrayList importedAccounts = marshaller.unmarshal(csvFile);
+        ArrayList<AccountInformation> importedAccounts = marshaller.unmarshal(csvFile);
         assertNotNull(importedAccounts);
         assertEquals(1, importedAccounts.size());
         assertEquals(account, (AccountInformation) importedAccounts.get(0));

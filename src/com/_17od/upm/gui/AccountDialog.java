@@ -54,6 +54,7 @@ import com._17od.upm.util.Translator;
 
 public class AccountDialog extends EscapeDialog
 {
+    private static final long serialVersionUID = 1L;
 
     private static final char[] ALLOWED_CHARS =
         {
@@ -69,13 +70,13 @@ public class AccountDialog extends EscapeDialog
     private JTextField url;
     private JTextField accountName;
     private boolean okClicked = false;
-    private ArrayList existingAccounts;
+    private ArrayList<String> existingAccounts;
     private JFrame parentWindow;
     private boolean accountChanged = false;
     private char defaultEchoChar;
 
 
-    public AccountDialog(AccountInformation account, JFrame parentWindow, boolean readOnly, ArrayList existingAccounts)
+    public AccountDialog(AccountInformation account, JFrame parentWindow, boolean readOnly, ArrayList<String> existingAccounts)
     {
         super(parentWindow, true);
 
@@ -436,7 +437,8 @@ public class AccountDialog extends EscapeDialog
             {
                 accountChanged = true;
             }
-            if (!Arrays.equals(pAccount.getPassword(), password.getText().getBytes()))
+
+            if (!Arrays.equals(pAccount.getPassword(), password.getPassword()))
             {
                 accountChanged = true;
             }
@@ -451,7 +453,7 @@ public class AccountDialog extends EscapeDialog
 
             pAccount.setAccountName(accountName.getText().trim());
             pAccount.setUserId(userId.getText().getBytes());
-            pAccount.setPassword(password.getText().getBytes());
+            pAccount.setPassword(password.getPassword());
             pAccount.setUrl(url.getText().getBytes());
             pAccount.setNotes(notes.getText().getBytes());
 

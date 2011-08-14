@@ -37,6 +37,7 @@ public class TestPasswordDatabase extends TestCase {
     private char[] password = "very secret password".toCharArray();
 
 
+
     public TestPasswordDatabase(String name) {
         super(name);
     }
@@ -84,7 +85,7 @@ public class TestPasswordDatabase extends TestCase {
         //Add an account
         AccountInformation ai = new AccountInformation("Hotmail",
                 "this is the userid".getBytes(),
-                "this is the password".getBytes(),
+                "this is the password".toCharArray(),
                 "this is the url".getBytes(),
                 "this is the notes".getBytes());
         db.addAccount(ai);
@@ -116,12 +117,12 @@ public class TestPasswordDatabase extends TestCase {
         //Add an account
         AccountInformation ai = new AccountInformation("Hotmail",
                 "this is the userid".getBytes(),
-                "this is the password".getBytes(),
+                "this is the password".toCharArray(),
                 "this is the url".getBytes(),
                 "this is the notes".getBytes());
         AccountInformation ai2 = new AccountInformation("Yahoo Mail",
                 "this is the userid2".getBytes(),
-                "this is the password2".getBytes(),
+                "this is the password2".toCharArray(),
                 "this is the url2".getBytes(),
                 "this is the notes2".getBytes());
         db.addAccount(ai);

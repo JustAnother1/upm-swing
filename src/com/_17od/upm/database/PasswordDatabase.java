@@ -32,9 +32,9 @@ import java.util.HashMap;
 public class PasswordDatabase
 {
     private File databaseFile;
-    private HashMap accounts;
+    private HashMap<String, AccountInformation> accounts;
 
-    public PasswordDatabase(HashMap accounts, File databaseFile)
+    public PasswordDatabase(HashMap<String, AccountInformation> accounts, File databaseFile)
     {
         this.accounts = accounts;
         this.databaseFile = databaseFile;
@@ -42,7 +42,7 @@ public class PasswordDatabase
 
     public PasswordDatabase(File dbFile)
     {
-        this.accounts = new HashMap();
+        this.accounts = new HashMap<String, AccountInformation>();
         this.databaseFile = dbFile;
     }
 
@@ -61,12 +61,12 @@ public class PasswordDatabase
         return (AccountInformation) accounts.get(name);
     }
 
-    public ArrayList getAccounts()
+    public ArrayList<AccountInformation> getAccounts()
     {
-        return new ArrayList(accounts.values());
+        return new ArrayList<AccountInformation>(accounts.values());
     }
 
-    public HashMap getAccountsHash()
+    public HashMap<String, AccountInformation> getAccountsHash()
     {
         return accounts;
     }

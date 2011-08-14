@@ -3,7 +3,7 @@
  * Copyright (C) 2005-2010 Adrian Smith
  *
  * This file is part of Universal Password Manager.
- *   
+ *
  * Universal Password Manager is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -21,18 +21,19 @@
 package com._17od.upm.database;
 
 
-public class ProblemReadingDatabaseFile extends Exception 
+public class ProblemReadingDatabaseFile extends Exception
 {
-    
-    public ProblemReadingDatabaseFile(String message) 
+
+    private static final long serialVersionUID = 1L;
+
+    public ProblemReadingDatabaseFile(String message)
     {
         super(message);
     }
 
-    
-    public ProblemReadingDatabaseFile(String message, Throwable cause) 
+    public ProblemReadingDatabaseFile(String message, Throwable cause)
     {
         super(message, cause);
     }
-    
+
 }

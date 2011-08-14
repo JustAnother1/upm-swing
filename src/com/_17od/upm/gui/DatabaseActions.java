@@ -50,7 +50,7 @@ public class DatabaseActions
 
     private MainWindow mainWindow;
     private PasswordDatabase database;
-    private ArrayList accountNames;
+    private ArrayList<String> accountNames;
     private PasswordDatabasePersistence dbPers;
 
 
@@ -120,7 +120,7 @@ public class DatabaseActions
         database = new PasswordDatabase(newDatabaseFile);
         dbPers = new PasswordDatabasePersistence(masterPassword.getPassword());
         saveDatabase();
-        accountNames = new ArrayList();
+        accountNames = new ArrayList<String>();
         doOpenDatabaseActions();
 
     }
@@ -221,10 +221,10 @@ public class DatabaseActions
     }
 
 
-    public ArrayList getAccountNames()
+    public ArrayList<String> getAccountNames()
     {
-        ArrayList dbAccounts = database.getAccounts();
-        ArrayList accountNames = new ArrayList();
+        ArrayList<AccountInformation> dbAccounts = database.getAccounts();
+        ArrayList<String> accountNames = new ArrayList<String>();
         for (int i=0; i<dbAccounts.size(); i++)
         {
             AccountInformation ai = (AccountInformation) dbAccounts.get(i);
@@ -430,7 +430,7 @@ public class DatabaseActions
     {
         String filterStr = mainWindow.getSearchField().getText().toLowerCase();
 
-        ArrayList filteredAccountsList = new ArrayList();
+        ArrayList<String> filteredAccountsList = new ArrayList<String>();
         for (int i=0; i<accountNames.size(); i++)
         {
             String accountName = (String) accountNames.get(i);
@@ -450,7 +450,7 @@ public class DatabaseActions
     }
 
 
-    public void populateListview(ArrayList accountNames)
+    public void populateListview(ArrayList<String> accountNames)
     {
         SortedListModel listview = (SortedListModel) mainWindow.getAccountsListview().getModel();
 
@@ -585,8 +585,8 @@ public class DatabaseActions
                 try
                 {
                     AccountsCSVMarshaller marshaller = new AccountsCSVMarshaller();
-                    ArrayList accountsInCSVFile = marshaller.unmarshal(csvFile);
-                    ArrayList accountsToImport = new ArrayList();
+                    ArrayList<AccountInformation> accountsInCSVFile = marshaller.unmarshal(csvFile);
+                    ArrayList<AccountInformation> accountsToImport = new ArrayList<AccountInformation>();
 
                     boolean importCancelled = false;
                     // Add each account to the open database. If the account

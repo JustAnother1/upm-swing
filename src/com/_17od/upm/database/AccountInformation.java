@@ -28,7 +28,7 @@ public class AccountInformation implements Serializable
 
     private String accountName;
     private byte[] userId;
-    private byte[] password;
+    private char[] password;
     private byte[] url;
     private byte[] notes;
 
@@ -36,12 +36,12 @@ public class AccountInformation implements Serializable
     {
         accountName = "";
         userId = "".getBytes();
-        password = "".getBytes();
+        password[0] = 0;
         url = "".getBytes();
         notes = "".getBytes();
     }
 
-    public AccountInformation(String accountName, byte[] userId, byte[] password,
+    public AccountInformation(String accountName, byte[] userId, char[] password,
             byte[] url, byte[] notes)
     {
         this.accountName = accountName;
@@ -71,12 +71,12 @@ public class AccountInformation implements Serializable
         this.notes = notes;
     }
 
-    public byte[] getPassword()
+    public char[] getPassword()
     {
         return password;
     }
 
-    public void setPassword(byte[] password)
+    public void setPassword(char[] password)
     {
         this.password = password;
     }

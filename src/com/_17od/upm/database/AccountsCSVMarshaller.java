@@ -34,7 +34,7 @@ import com.csvreader.CsvWriter;
 public class AccountsCSVMarshaller
 {
 
-    public void marshal(ArrayList accounts, File file) throws ExportException
+    public void marshal(ArrayList<AccountInformation> accounts, File file) throws ExportException
     {
 
         if (file.exists())
@@ -64,9 +64,9 @@ public class AccountsCSVMarshaller
 
     }
 
-    public ArrayList unmarshal(File file) throws ImportException
+    public ArrayList<AccountInformation> unmarshal(File file) throws ImportException
     {
-        ArrayList accounts = new ArrayList();
+        ArrayList<AccountInformation> accounts = new ArrayList<AccountInformation>();
 
         try
         {
@@ -83,7 +83,7 @@ public class AccountsCSVMarshaller
                 accounts.add(new AccountInformation(
                         csvReader.get(0),
                         csvReader.get(1).getBytes(),
-                        csvReader.get(2).getBytes(),
+                        csvReader.get(2).toCharArray(),
                         csvReader.get(3).getBytes(),
                         csvReader.get(4).getBytes()));
             }

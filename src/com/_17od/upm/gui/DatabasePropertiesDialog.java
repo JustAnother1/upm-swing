@@ -53,7 +53,7 @@ public class DatabasePropertiesDialog extends EscapeDialog
     private static final long serialVersionUID = 1L;
     private boolean databaseNeedsSaving = false;
 
-    public DatabasePropertiesDialog(final JFrame frame, ArrayList accountNames, final PasswordDatabase database)
+    public DatabasePropertiesDialog(final JFrame frame, ArrayList<String> accountNames, final PasswordDatabase database)
     {
         super(frame, Translator.translate("databaseProperties"), true);
 

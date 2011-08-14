@@ -115,7 +115,7 @@ public class PasswordDatabasePersistence
         }
 
         // Read the remainder of the database in now
-        HashMap accounts = new HashMap();
+        HashMap<String, AccountInformation> accounts = new HashMap<String, AccountInformation>();
         try
         {
             while (true)
@@ -148,7 +148,7 @@ public class PasswordDatabasePersistence
         ObjectOutputStream out = new ObjectOutputStream(gout);
 
         // serialize the accounts
-        Iterator it = database.getAccountsHash().values().iterator();
+        Iterator<AccountInformation> it = database.getAccountsHash().values().iterator();
         while (it.hasNext())
         {
             AccountInformation ai = (AccountInformation) it.next();

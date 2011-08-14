@@ -23,6 +23,8 @@ package com._17od.upm.database;
 public class ExportException extends Exception
 {
 
+    private static final long serialVersionUID = 1L;
+
     public ExportException(String message)
     {
         super(message);

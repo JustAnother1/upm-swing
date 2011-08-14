@@ -26,19 +26,17 @@ import java.util.TreeSet;
 import javax.swing.AbstractListModel;
 
 
-public class SortedListModel extends AbstractListModel {
-
-    private TreeSet model;
-
+public class SortedListModel extends AbstractListModel
+{
+    private static final long serialVersionUID = 1L;
+    private TreeSet<String> model;
 
     public SortedListModel()
     {
-        model = new TreeSet(new Comparator()
+        model = new TreeSet<String>(new Comparator<String>()
         {
-            public int compare(Object o1, Object o2)
+            public int compare(String str1, String str2)
             {
-                String str1 = o1.toString();
-                String str2 = o2.toString();
                 Collator collator = Collator.getInstance();
                 int result = collator.compare(str1, str2);
                 return result;
@@ -46,20 +44,17 @@ public class SortedListModel extends AbstractListModel {
         });
     }
 
-
     public int getSize()
     {
         return model.size();
     }
 
-
-    public Object getElementAt(int index)
+    public String getElementAt(int index)
     {
-        return model.toArray()[index];
+        return (String) model.toArray()[index];
     }
 
-
-    public void addElement(Object element)
+    public void addElement(String element)
     {
         if (model.add(element))
         {
@@ -67,21 +62,18 @@ public class SortedListModel extends AbstractListModel {
         }
     }
 
-
     public void clear()
     {
         model.clear();
         fireContentsChanged(this, 0, getSize());
     }
 
-
-    public boolean contains(Object element)
+    public boolean contains(String element)
     {
         return model.contains(element);
     }
 
-
-    public boolean removeElement(Object element)
+    public boolean removeElement(String element)
     {
         boolean removed = model.remove(element);
         if(removed)

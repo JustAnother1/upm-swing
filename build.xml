@@ -70,8 +70,9 @@
 
         <mkdir dir="${build}"/>
         <javac srcdir="${src}" destdir="${build}" debug="on" failonerror="true" includeantruntime="false"
-            excludes="com\_17od\upm\platformspecific\**" source="1.4" target="1.4">
+            excludes="com\_17od\upm\platformspecific\**" source="1.6" target="1.6">
             <classpath refid="project.class.path"/>
+            <compilerarg value="-Xlint:unchecked"/>
         </javac>
 
         <mkdir dir="${test.build}"/>
