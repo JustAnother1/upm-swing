@@ -21,8 +21,8 @@
 package com._17od.upm.gui;
 
 import java.awt.Color;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,6 +175,15 @@ public class DatabaseActions
                                     JOptionPane.OK_CANCEL_OPTION);
             }
             JDialog dialog = pane.createDialog(mainWindow, Translator.translate("masterPassword"));
+
+            dialog.addWindowFocusListener(new WindowAdapter()
+                                          {
+                                              public void windowGainedFocus(WindowEvent e)
+                                              {
+                                                  masterPassword.requestFocusInWindow();
+                                              }
+                                          });
+            /*
             dialog.addComponentListener(new ComponentAdapter()
                                         {
                                             public void componentShown(ComponentEvent e)
@@ -182,6 +191,7 @@ public class DatabaseActions
                                                 masterPassword.requestFocusInWindow();
                                             }
                                         });
+                                        */
             dialog.requestFocusInWindow();
             pane.requestFocusInWindow();
             masterPassword.requestFocusInWindow();
