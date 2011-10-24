@@ -25,8 +25,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -36,7 +37,7 @@ public class Preferences
 {
     public static final String DB_TO_LOAD_ON_STARTUP= "DBToLoadOnStartup";
 
-    private static Log log = LogFactory.getLog(Preferences.class);
+    private static Logger log = LoggerFactory.getLogger(Preferences.class);
     private static final String PREF_FILE = "upm.properties";
     private static final String PREF_FILE_SYS_PROP = "upm.properties";
     private static Properties preferences;
