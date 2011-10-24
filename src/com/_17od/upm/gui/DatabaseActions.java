@@ -33,6 +33,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com._17od.upm.crypto.CryptoException;
 import com._17od.upm.crypto.InvalidPasswordException;
 import com._17od.upm.database.AccountInformation;
@@ -47,6 +50,8 @@ import com._17od.upm.util.Translator;
 
 public class DatabaseActions
 {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private MainWindow mainWindow;
     private PasswordDatabase database;
     private ArrayList<String> accountNames;
@@ -66,19 +71,22 @@ public class DatabaseActions
      */
     public void newDatabase() throws IOException, CryptoException
     {
+        log.debug("new Database action");
         File newDatabaseFile = getSaveAsFile(Translator.translate("newPasswordDatabase"));
         if (newDatabaseFile == null)
         {
+            log.debug("FileName is null !");
             return;
         }
         char[] password = askUserForPassword(Translator.translate("enterMasterPassword"), true);
         if(null == password)
         {
-            // user canceled dialog
+            log.debug("user canceled dialog");
             return;
         }
         if (newDatabaseFile.exists())
         {
+            log.debug("deleting existing Database");
             newDatabaseFile.delete();
         }
         database = new PasswordDatabase(newDatabaseFile);
@@ -151,6 +159,7 @@ public class DatabaseActions
      */
     private char[] askUserForPassword(String message, boolean mustConfirm)
     {
+        log.debug("asking used for password");
         char[] password = null;
         final JPasswordField masterPassword = new JPasswordField("");
         boolean passwordsMatch = false;
@@ -183,15 +192,6 @@ public class DatabaseActions
                                                   masterPassword.requestFocusInWindow();
                                               }
                                           });
-            /*
-            dialog.addComponentListener(new ComponentAdapter()
-                                        {
-                                            public void componentShown(ComponentEvent e)
-                                            {
-                                                masterPassword.requestFocusInWindow();
-                                            }
-                                        });
-                                        */
             dialog.requestFocusInWindow();
             pane.requestFocusInWindow();
             masterPassword.requestFocusInWindow();
@@ -209,13 +209,11 @@ public class DatabaseActions
                         passwordsMatch = true;
                     }
                 }
-                else
-                {
-                    password = masterPassword.getPassword();
-                }
+                password = masterPassword.getPassword();
             }
             else
             {
+                log.debug("User clicked cancel");
                 return null;
             }
         } while ((passwordsMatch == false) && (true == mustConfirm));
