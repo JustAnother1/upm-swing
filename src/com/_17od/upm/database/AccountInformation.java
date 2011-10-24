@@ -36,7 +36,7 @@ public class AccountInformation implements Serializable
     {
         accountName = "";
         userId = "".getBytes();
-        password[0] = 0;
+        password = "".toCharArray();
         url = "".getBytes();
         notes = "".getBytes();
     }
