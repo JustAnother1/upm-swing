@@ -36,11 +36,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
-import javax.crypto.IllegalBlockSizeException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -63,6 +62,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com._17od.upm.crypto.CryptoException;
 import com._17od.upm.database.AccountInformation;
 import com._17od.upm.database.ProblemReadingDatabaseFile;
 import com._17od.upm.util.Preferences;
@@ -121,12 +121,21 @@ public class MainWindow extends JFrame implements ActionListener
     private JLabel statusBar = new JLabel(" ");
     private DatabaseActions dbActions;
 
-    public MainWindow(String title) throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-                                           UnsupportedLookAndFeelException, IllegalBlockSizeException, IOException,
-                                           GeneralSecurityException, ProblemReadingDatabaseFile
+    public MainWindow(String title)
     {
         super(title);
-        Preferences.load();
+        try
+        {
+            Preferences.load();
+        }
+        catch(FileNotFoundException e1)
+        {
+            Util.errorHandler(e1);
+        }
+        catch(IOException e1)
+        {
+            Util.errorHandler(e1);
+        }
         Translator.initialise();
         setIconImage(Util.loadImage("upm.gif").getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -137,26 +146,35 @@ public class MainWindow extends JFrame implements ActionListener
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        try
+
+        //Load the startup database if it's configured
+        String db = Preferences.get(Preferences.DB_TO_LOAD_ON_STARTUP);
+        if(db != null && !db.equals(""))
         {
-            //Load the startup database if it's configured
-            String db = Preferences.get(Preferences.DB_TO_LOAD_ON_STARTUP);
-            if(db != null && !db.equals(""))
+            File dbFile = new File(db);
+            if(!dbFile.exists())
             {
-                File dbFile = new File(db);
-                if(!dbFile.exists())
-                {
-                    Util.errorHandler(new Exception(Translator.translate("dbDoesNotExist", db)));
-                }
-                else
+                Util.errorHandler(new Exception(Translator.translate("dbDoesNotExist", db)));
+            }
+            else
+            {
+                try
                 {
                     dbActions.openDatabase(db);
                 }
+                catch(IOException e)
+                {
+                    Util.errorHandler(e);
+                }
+                catch(ProblemReadingDatabaseFile e)
+                {
+                    Util.errorHandler(e);
+                }
+                catch(CryptoException e)
+                {
+                    Util.errorHandler(e);
+                }
             }
-        }
-        catch(Exception e)
-        {
-            Util.errorHandler(e);
         }
 
         // Give the search field focus
@@ -167,28 +185,48 @@ public class MainWindow extends JFrame implements ActionListener
 
     public static void main(String[] args)
     {
+        // This is the start of the Programm.
+        // So first things first
+        // add a new Uncaught Exception Handler
+        Thread.setDefaultUncaughtExceptionHandler(new UpmUncaughtExceptionHandler());
+
         javax.swing.SwingUtilities.invokeLater(new Runnable()
         {
             public void run()
             {
+                //Use the System look and feel
                 try
                 {
-                    //Use the System look and feel
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    Double jvmVersion = new Double(System.getProperty("java.specification.version"));
-                    if (jvmVersion.doubleValue() < 1.6)
-                    {
-                        JOptionPane.showMessageDialog(null, Translator.translate("requireJava16"), Translator.translate("problem"), JOptionPane.ERROR_MESSAGE);
-                        System.exit(1);
-                    }
-                    else
-                    {
-                        new MainWindow(applicationName);
-                    }
                 }
-                catch (Exception e)
+                catch(ClassNotFoundException e)
                 {
-                    e.printStackTrace();
+                    Util.errorHandler(e);
+                }
+                catch(InstantiationException e)
+                {
+                    Util.errorHandler(e);
+                }
+                catch(IllegalAccessException e)
+                {
+                    Util.errorHandler(e);
+                }
+                catch(UnsupportedLookAndFeelException e)
+                {
+                    Util.errorHandler(e);
+                }
+                Double jvmVersion = new Double(System.getProperty("java.specification.version"));
+                if (jvmVersion.doubleValue() < 1.6)
+                {
+                    JOptionPane.showMessageDialog(null,
+                                                  Translator.translate("requireJava16"),
+                                                  Translator.translate("problem"),
+                                                  JOptionPane.ERROR_MESSAGE);
+                    System.exit(1);
+                }
+                else
+                {
+                    new MainWindow(applicationName);
                 }
             }
         });
@@ -587,64 +625,178 @@ public class MainWindow extends JFrame implements ActionListener
 
     public void actionPerformed(ActionEvent event)
     {
-        try
+        if (event.getActionCommand() == MainWindow.NEW_DATABASE_TXT)
         {
-            if (event.getActionCommand() == MainWindow.NEW_DATABASE_TXT)
+            try
             {
                 dbActions.newDatabase();
             }
-            else if (event.getActionCommand() == MainWindow.OPEN_DATABASE_TXT)
+            catch(IOException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(CryptoException e)
+            {
+                Util.errorHandler(e);
+            }
+        }
+        else if (event.getActionCommand() == MainWindow.OPEN_DATABASE_TXT)
+        {
+            try
             {
                 dbActions.openDatabase();
             }
-            else if (event.getActionCommand() == MainWindow.ADD_ACCOUNT_TXT)
+            catch(IOException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(ProblemReadingDatabaseFile e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(CryptoException e)
+            {
+                Util.errorHandler(e);
+            }
+        }
+        else if (event.getActionCommand() == MainWindow.ADD_ACCOUNT_TXT)
+        {
+            try
             {
                 dbActions.addAccount();
             }
-            else if (event.getActionCommand() == MainWindow.EDIT_ACCOUNT_TXT)
+            catch(IOException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(CryptoException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(ProblemReadingDatabaseFile e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(PasswordDatabaseException e)
+            {
+                Util.errorHandler(e);
+            }
+        }
+        else if (event.getActionCommand() == MainWindow.EDIT_ACCOUNT_TXT)
+        {
+            try
             {
                 dbActions.editAccount();
             }
-            else if (event.getActionCommand() == MainWindow.DELETE_ACCOUNT_TXT)
+            catch(ProblemReadingDatabaseFile e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(IOException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(CryptoException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(PasswordDatabaseException e)
+            {
+                Util.errorHandler(e);
+            }
+        }
+        else if (event.getActionCommand() == MainWindow.DELETE_ACCOUNT_TXT)
+        {
+            try
             {
                 dbActions.deleteAccount();
             }
-            else if (event.getActionCommand() == MainWindow.VIEW_ACCOUNT_TXT)
+            catch(IOException e)
             {
-                dbActions.viewAccount();
+                Util.errorHandler(e);
             }
-            else if (event.getActionCommand() == MainWindow.OPTIONS_TXT)
+            catch(CryptoException e)
             {
-                dbActions.options();
+                Util.errorHandler(e);
             }
-            else if (event.getActionCommand() == MainWindow.ABOUT_TXT)
+            catch(ProblemReadingDatabaseFile e)
             {
-                dbActions.showAbout();
+                Util.errorHandler(e);
             }
-            else if (event.getActionCommand() == MainWindow.RESET_SEARCH_TXT)
+            catch(PasswordDatabaseException e)
             {
-                dbActions.resetSearch();
+                Util.errorHandler(e);
             }
-            else if (event.getActionCommand() == MainWindow.CHANGE_MASTER_PASSWORD_TXT)
+        }
+        else if (event.getActionCommand() == MainWindow.VIEW_ACCOUNT_TXT)
+        {
+            dbActions.viewAccount();
+        }
+        else if (event.getActionCommand() == MainWindow.OPTIONS_TXT)
+        {
+            dbActions.options();
+        }
+        else if (event.getActionCommand() == MainWindow.ABOUT_TXT)
+        {
+            dbActions.showAbout();
+        }
+        else if (event.getActionCommand() == MainWindow.RESET_SEARCH_TXT)
+        {
+            dbActions.resetSearch();
+        }
+        else if (event.getActionCommand() == MainWindow.CHANGE_MASTER_PASSWORD_TXT)
+        {
+            try
             {
                 dbActions.changeMasterPassword();
             }
-            else if (event.getActionCommand() == MainWindow.EXIT_TXT)
+            catch(IOException e)
             {
-                dbActions.exitApplication();
+                Util.errorHandler(e);
             }
-            else if (event.getActionCommand() == MainWindow.EXPORT_TXT)
+            catch(ProblemReadingDatabaseFile e)
             {
-                dbActions.export();
+                Util.errorHandler(e);
             }
-            else if (event.getActionCommand() == MainWindow.IMPORT_TXT)
+            catch(CryptoException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(PasswordDatabaseException e)
+            {
+                Util.errorHandler(e);
+            }
+        }
+        else if (event.getActionCommand() == MainWindow.EXIT_TXT)
+        {
+            dbActions.exitApplication();
+        }
+        else if (event.getActionCommand() == MainWindow.EXPORT_TXT)
+        {
+            dbActions.export();
+        }
+        else if (event.getActionCommand() == MainWindow.IMPORT_TXT)
+        {
+            try
             {
                 dbActions.importAccounts();
             }
-        }
-        catch (Exception e)
-        {
-            Util.errorHandler(e);
+            catch(ProblemReadingDatabaseFile e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(IOException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(CryptoException e)
+            {
+                Util.errorHandler(e);
+            }
+            catch(PasswordDatabaseException e)
+            {
+                Util.errorHandler(e);
+            }
         }
     }
 

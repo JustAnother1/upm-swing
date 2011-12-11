@@ -60,6 +60,7 @@ public class DatabaseActions
     public DatabaseActions(MainWindow mainWindow)
     {
         this.mainWindow = mainWindow;
+        accountNames = new ArrayList<String>();
     }
 
     /**
@@ -92,8 +93,8 @@ public class DatabaseActions
         database = new PasswordDatabase(newDatabaseFile);
         dbPers = new PasswordDatabasePersistence(password);
         saveDatabase();
-        accountNames = new ArrayList<String>();
         mainWindow.doOpenDatabaseActions(database.getDatabaseFile().toString());
+        accountNames = getAccountNames();
     }
 
     public void changeMasterPassword() throws IOException, ProblemReadingDatabaseFile,
@@ -116,7 +117,7 @@ public class DatabaseActions
                     dbPers.load(database.getDatabaseFile(), password);
                     passwordCorrect = true;
                 }
-                catch (InvalidPasswordException e)
+                catch(InvalidPasswordException e)
                 {
                     JOptionPane.showMessageDialog(mainWindow, Translator.translate("incorrectPassword"));
                 }
@@ -262,6 +263,7 @@ public class DatabaseActions
         if(passwordCorrect)
         {
             mainWindow.doOpenDatabaseActions(database.getDatabaseFile().toString());
+            accountNames = getAccountNames();
         }
     }
 
@@ -276,6 +278,7 @@ public class DatabaseActions
             if(databaseFile.exists())
             {
                 openDatabase(databaseFile.getAbsolutePath());
+                accountNames = getAccountNames();
             }
             else
             {
@@ -297,7 +300,14 @@ public class DatabaseActions
                 //Remove the account from the listview, accountNames arraylist & the database
                 listview.removeElement(selectedAccName);
                 int i = accountNames.indexOf(selectedAccName);
-                accountNames.remove(i);
+                if(-1 != i)
+                {
+                    accountNames.remove(i);
+                }
+                else
+                {
+                    System.err.println("Could not delete the Account " + selectedAccName + " from accountNames !");
+                }
                 database.deleteAccount(selectedAccName);
                 saveDatabase();
                 //[1375385] Call the filter method so that the listview is
@@ -320,6 +330,7 @@ public class DatabaseActions
             database.deleteAccount(accInfo.getAccountName());
             database.addAccount(accInfo);
             saveDatabase();
+            accountNames = getAccountNames();
             accountNames.add(accInfo.getAccountName());
             //[1375390] Ensure that the listview is properly filtered after an add
             filter();

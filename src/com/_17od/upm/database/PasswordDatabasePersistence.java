@@ -38,6 +38,7 @@ import java.util.zip.GZIPOutputStream;
 import com._17od.upm.crypto.CryptoException;
 import com._17od.upm.crypto.EncryptionService;
 import com._17od.upm.crypto.InvalidPasswordException;
+import com._17od.upm.util.Util;
 
 public class PasswordDatabasePersistence
 {
@@ -98,9 +99,12 @@ public class PasswordDatabasePersistence
             //Attempt to decrypt the database information
             encryptionService = new EncryptionService(password, salt);
             byte[] decryptedBytes;
-            try {
+            try
+            {
                 decryptedBytes = encryptionService.decrypt(encryptedBytes);
-            } catch (CryptoException e) {
+            }
+            catch (CryptoException e)
+            {
                 throw new InvalidPasswordException();
             }
 
@@ -130,15 +134,11 @@ public class PasswordDatabasePersistence
         }
         catch (ClassNotFoundException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Util.errorHandler(e);
         }
         is.close();
-
         PasswordDatabase passwordDatabase = new PasswordDatabase(accounts, databaseFile);
-
         return passwordDatabase;
-
     }
 
     public void save(PasswordDatabase database) throws IOException, CryptoException

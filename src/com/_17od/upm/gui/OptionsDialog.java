@@ -28,6 +28,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -37,7 +38,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import javax.swing.JTextField;
@@ -46,6 +46,7 @@ import javax.swing.border.EtchedBorder;
 
 import com._17od.upm.util.Preferences;
 import com._17od.upm.util.Translator;
+import com._17od.upm.util.Util;
 
 
 public class OptionsDialog extends EscapeDialog
@@ -202,30 +203,28 @@ public class OptionsDialog extends EscapeDialog
 
     private void okButtonAction()
     {
+        Preferences.set(Preferences.DB_TO_LOAD_ON_STARTUP, dbToLoadOnStartup.getText());
+        // Save the new language and set a flag if it has changed
+        String beforeLocale = Preferences.get("locale");
+        Locale selectedLocale = Translator.SUPPORTED_LOCALES[localeComboBox.getSelectedIndex()];
+        String afterLocale = selectedLocale.getLanguage();
+        if (!afterLocale.equals(beforeLocale))
+        {
+            Preferences.set("locale", selectedLocale.getLanguage());
+            Translator.loadBundle(selectedLocale);
+            languageChanged = true;
+        }
         try
         {
-            Preferences.set(Preferences.DB_TO_LOAD_ON_STARTUP, dbToLoadOnStartup.getText());
-
-            // Save the new language and set a flag if it has changed
-            String beforeLocale = Preferences.get("locale");
-            Locale selectedLocale = Translator.SUPPORTED_LOCALES[localeComboBox.getSelectedIndex()];
-            String afterLocale = selectedLocale.getLanguage();
-            if (!afterLocale.equals(beforeLocale))
-            {
-                Preferences.set("locale", selectedLocale.getLanguage());
-                Translator.loadBundle(selectedLocale);
-                languageChanged = true;
-            }
-
             Preferences.save();
-            setVisible(false);
-            dispose();
-            okClicked = true;
         }
-        catch (Exception e)
+        catch(IOException e)
         {
-            JOptionPane.showMessageDialog(parentFrame, e.getStackTrace(), Translator.translate("error"), JOptionPane.ERROR_MESSAGE);
+            Util.errorHandler(e);
         }
+        setVisible(false);
+        dispose();
+        okClicked = true;
     }
 
 

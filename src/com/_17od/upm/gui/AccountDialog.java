@@ -103,6 +103,10 @@ public class AccountDialog extends EscapeDialog
 
         this.pAccount = account;
         this.existingAccounts = existingAccounts;
+        if(null == this.existingAccounts)
+        {
+            this.existingAccounts = new ArrayList<String>();
+        }
         this.parentWindow = parentWindow;
 
         getContentPane().setLayout(new GridBagLayout());
@@ -416,51 +420,62 @@ public class AccountDialog extends EscapeDialog
 
     private void okButtonAction()
     {
+        String help = accountName.getText();
+        if(null != help)
+        {
+            help.trim();
+        }
+        else
+        {
+            System.err.println("Account Name is null !");
+            help = "";
+        }
+
+
+
         // Check if the account name has changed.
-        if (!pAccount.getAccountName().equals(accountName.getText().trim()))
+        if(!pAccount.getAccountName().equals(help))
+        {
+            accountChanged = true;
+            //[1375397] Ensure that an account with the supplied name doesn't already exist.
+            //By checking 'accountNames' we're checking both visible and filtered accounts
+            if(existingAccounts.indexOf(help) > -1)
+            {
+                JOptionPane.showMessageDialog(parentWindow,
+                                              Translator.translate("accountAlreadyExistsWithName",
+                                              accountName.getText().trim()),
+                                              Translator.translate("accountAlreadyExists"),
+                                              JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        // Check for changes
+        if (!Arrays.equals(pAccount.getUserId(), userId.getText().getBytes()))
+        {
+            accountChanged = true;
+        }
+        if (!Arrays.equals(pAccount.getPassword(), password.getPassword()))
+        {
+            accountChanged = true;
+        }
+        if (!Arrays.equals(pAccount.getUrl(), url.getText().getBytes()))
+        {
+            accountChanged = true;
+        }
+        if (!Arrays.equals(pAccount.getNotes(), notes.getText().getBytes()))
         {
             accountChanged = true;
         }
 
-        //[1375397] Ensure that an account with the supplied name doesn't already exist.
-        //By checking 'accountNames' we're checking both visible and filtered accounts
-        //
-        // Only check if an account with the same name exists if the account name has actually changed
-        if (accountChanged && existingAccounts.indexOf(accountName.getText().trim()) > -1)
-        {
-            JOptionPane.showMessageDialog(parentWindow, Translator.translate("accountAlreadyExistsWithName", accountName.getText().trim()), Translator.translate("accountAlreadyExists"), JOptionPane.ERROR_MESSAGE);
-        }
-        else
-        {
-            // Check for changes
-            if (!Arrays.equals(pAccount.getUserId(), userId.getText().getBytes()))
-            {
-                accountChanged = true;
-            }
+        pAccount.setAccountName(accountName.getText().trim());
+        pAccount.setUserId(userId.getText().getBytes());
+        pAccount.setPassword(password.getPassword());
+        pAccount.setUrl(url.getText().getBytes());
+        pAccount.setNotes(notes.getText().getBytes());
 
-            if (!Arrays.equals(pAccount.getPassword(), password.getPassword()))
-            {
-                accountChanged = true;
-            }
-            if (!Arrays.equals(pAccount.getUrl(), url.getText().getBytes()))
-            {
-                accountChanged = true;
-            }
-            if (!Arrays.equals(pAccount.getNotes(), notes.getText().getBytes()))
-            {
-                accountChanged = true;
-            }
-
-            pAccount.setAccountName(accountName.getText().trim());
-            pAccount.setUserId(userId.getText().getBytes());
-            pAccount.setPassword(password.getPassword());
-            pAccount.setUrl(url.getText().getBytes());
-            pAccount.setNotes(notes.getText().getBytes());
-
-            setVisible(false);
-            dispose();
-            okClicked = true;
-        }
+        setVisible(false);
+        dispose();
+        okClicked = true;
     }
 
 

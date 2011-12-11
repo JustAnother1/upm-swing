@@ -45,6 +45,10 @@ public class AccountInformation implements Serializable
             byte[] url, byte[] notes)
     {
         this.accountName = accountName;
+        if(null == this.accountName)
+        {
+            this.accountName = "";
+        }
         this.userId = userId;
         this.password = password;
         this.url = url;
