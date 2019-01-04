@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipException;
 
 import com._17od.upm.crypto.CryptoException;
 import com._17od.upm.crypto.EncryptionService;
@@ -103,14 +104,21 @@ public class PasswordDatabasePersistence
             {
                 decryptedBytes = encryptionService.decrypt(encryptedBytes);
             }
-            catch (CryptoException e)
+            catch(CryptoException e)
             {
                 throw new InvalidPasswordException();
             }
 
-            //If we've got here then the database was successfully decrypted
+            // If we've got here then the database was successfully decrypted
             is = new ByteArrayInputStream(decryptedBytes);
-            gis = new GZIPInputStream(is);
+            try
+            {
+                gis = new GZIPInputStream(is);
+            }
+            catch(ZipException e)
+            {
+                throw new ProblemReadingDatabaseFile("Database compression is corrupted");
+            }
             ois = new ObjectInputStream(gis);
         }
         else
@@ -189,13 +197,13 @@ public class PasswordDatabasePersistence
             offset += numRead;
         }
 
+        is.close();
+
         // Ensure all the bytes have been read in
         if (offset < bytes.length)
         {
             throw new IOException("Could not completely read file " + file.getName());
         }
-
-        is.close();
 
         return bytes;
     }
